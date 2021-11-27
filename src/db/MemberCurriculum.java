@@ -10,4 +10,5 @@ public class MemberCurriculum {
     private Long id;
     private Member member;
     private Curriculum curriculum;
+
 }
