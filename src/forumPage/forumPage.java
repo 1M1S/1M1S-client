@@ -2,6 +2,7 @@ package forumPage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import db.*;
+import main.MainFrame;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -73,8 +74,9 @@ public class forumPage extends JFrame {
     };
     private JTable commentTable = new JTable(comment_dtm);
     private JScrollPane commentScrollPane;
-
-    public forumPage() {
+    private MainFrame mainFrame;
+    public forumPage(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
         //프레임 설정
         setTitle("1M1S-forum");
         setVisible(true);

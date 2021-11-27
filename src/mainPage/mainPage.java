@@ -2,17 +2,22 @@ package mainPage;
 
 import loginPage.loginPage;
 import forumPage.forumPage;
+import main.MainFrame;
+
 import javax.swing.*;
 import java.awt.*;
 
 public class mainPage extends JFrame {
     private final Font mainFont = new Font("나눔고딕", Font.PLAIN, 20);
     public myPanel mainPanel = new myPanel();
+    private MainFrame mainFrame;
 
-    public mainPage() {
+    public mainPage(MainFrame mainFrame) {
         //프레임 설정
-        setTitle("1M1S");
+        this.mainFrame = mainFrame;
+
         setVisible(false);
+        setTitle("1M1S");
         setLayout(null);
         setResizable(false);
         setSize(1115, 824);
@@ -71,7 +76,7 @@ public class mainPage extends JFrame {
         //게시판 버튼 설정
         JButton button5 = new JButton("게시판");
         button5.addActionListener(e -> {
-            forumPage forum = new forumPage();
+            forumPage forum = new forumPage(this.mainFrame);
         });
         button5.setFont(mainFont);
         button5.setBounds(0, 440, 200, 110);
@@ -93,10 +98,5 @@ public class mainPage extends JFrame {
             ImageIcon image = new ImageIcon("C:\\Users\\Asus\\IdeaProjects\\1M1S-client\\src\\mainPage\\background1.png");
             g.drawImage(image.getImage(), 0, 0, d.width, d.height, null);
         }
-    }
-
-    public static void main(String[] args) {
-        mainPage p = new mainPage();
-        loginPage loginP = new loginPage(p);
     }
 }

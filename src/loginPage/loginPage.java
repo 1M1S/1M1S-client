@@ -2,6 +2,7 @@ package loginPage;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import main.MainFrame;
 import signUpPage.signUpPage;
 
 import javax.swing.*;
@@ -12,8 +13,11 @@ import mainPage.mainPage;
 public class loginPage extends JFrame{
     private final Font mainFont = new Font("나눔고딕", Font.PLAIN, 20);
     private final myPanel loginPanel = new myPanel();
+    private MainFrame mainFrame;
 
-    public loginPage(mainPage p){
+
+    public loginPage(MainFrame mainFrame){
+        this.mainFrame = mainFrame;
         //프레임 설정
         setTitle("1M1S");
         setVisible(true);
@@ -83,7 +87,7 @@ public class loginPage extends JFrame{
                     JOptionPane.showMessageDialog(null, "틀린 비밀번호입니다.", "Message", JOptionPane.ERROR_MESSAGE);
                     pwdText.setText("");
                 } else{
-                    p.setVisible(true);
+                    mainFrame.setVisible(true);
                     //현재 프레임만 끄기
                     dispose();
                 }
@@ -96,7 +100,7 @@ public class loginPage extends JFrame{
         //회원가입 버튼
         JButton signUpButton = new JButton("Sign Up");
         signUpButton.addActionListener(e -> {
-            signUpPage signUp = new signUpPage();
+            signUpPage signUp = new signUpPage(mainFrame);
             signUp.setVisible(true);
         });
         signUpButton.setFont(mainFont);

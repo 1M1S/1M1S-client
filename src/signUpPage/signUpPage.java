@@ -6,6 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import db.*;
+import main.MainFrame;
 
 public class signUpPage extends JFrame {
     private Long interest_selected = Long.parseLong(Integer.toString(0)); //유저 관심 분야, 순서대로 운동, 프로그래밍, 취업
@@ -19,8 +20,9 @@ public class signUpPage extends JFrame {
     private final myPanel3 panelPrograming2 = new myPanel3();
     private final myPanel3 panelEmploy1 = new myPanel3();
     private final myPanel3 panelEmploy2 = new myPanel3();
-
-    public signUpPage() {
+    private MainFrame mainFrame;
+    public signUpPage(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
         //프레임 설정
         setVisible(true);
         setTitle("1M1S");
