@@ -1,7 +1,8 @@
 package forumPage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import db.*;
+import db.Comment;
+import db.Post;
 import main.MainFrame;
 
 import javax.swing.*;
@@ -15,7 +16,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Objects;
 
-public class forumPage extends JFrame {
+public class ForumPage extends JPanel {
     private final Font mainFont = new Font("나눔고딕", Font.PLAIN, 20);
     private final Font smallFont = new Font("나눔고딕", Font.PLAIN, 17);
     private final Font tinyFont = new Font("나눔고딕", Font.PLAIN, 13);
@@ -75,15 +76,10 @@ public class forumPage extends JFrame {
     private JTable commentTable = new JTable(comment_dtm);
     private JScrollPane commentScrollPane;
     private MainFrame mainFrame;
-    public forumPage(MainFrame mainFrame) {
+    public ForumPage(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         //프레임 설정
-        setTitle("1M1S-forum");
-        setVisible(true);
         setLayout(null);
-        setResizable(false);
-        setSize(1115, 824);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         add(panelForumGeneral);
         add(panelForumExercise);
         add(panelForumPrograming);
