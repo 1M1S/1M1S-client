@@ -45,6 +45,7 @@ public class SurveyRequest {
         try{
             request.POST(MemberInterest.class);
             InterestSelectPanel.mainFrame.change(MainFrame.loginPage, LoginPage.class);
+            SurveyPanel.page = 1;
         }catch (Exception e){
 
         }

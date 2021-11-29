@@ -86,8 +86,9 @@ public class SurveyPanel extends JPanel {
             }
             case 2 -> {
                 page = 1;
-                InterestSelectPanel.mainFrame.change(new SurveyPanel(InterestSelectPanel.mainFrame.interestSelectPanel), SurveyPanel.class);
-                addQuestions();
+                InterestSelectPanel.surveyPanel = new SurveyPanel(interestSelectPanel);
+                InterestSelectPanel.mainFrame.change(InterestSelectPanel.surveyPanel, SurveyPanel.class);
+                InterestSelectPanel.surveyPanel.addQuestions();
             }
         }
     }
