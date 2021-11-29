@@ -4,6 +4,8 @@ import javax.swing.*;
 
 import db.*;
 import main.MainFrame;
+import surveyPage.InterestSelectPanel;
+import surveyPage.SurveyPanel;
 
 public class SignUpPage extends JPanel {
 
@@ -17,8 +19,6 @@ public class SignUpPage extends JPanel {
     public SignUpPage(MainFrame mainFrame) {
         SignUpPage.mainFrame = mainFrame;
         SignUpPage.memberInformationPanel = new MemberInformationPanel(this);
-        SignUpPage.interestSelectPanel = new InterestSelectPanel(this);
-        SignUpPage.surveyPanel = new SurveyPanel(this);
         add(memberInformationPanel);
         setLayout(null);
         setSize(1100, 824);

@@ -1,5 +1,8 @@
-package signUpPage;
+package surveyPage;
 
+import main.MainFrame;
+import signUpPage.JoinRequest;
+import signUpPage.SignUpPage;
 import utils.Font;
 import utils.Images;
 
@@ -11,14 +14,16 @@ import java.awt.*;
 
 
 public class InterestSelectPanel extends JPanel {
-    public SignUpPage signUpPage;
+    static public MainFrame mainFrame;
+    static SurveyPanel surveyPanel;
     public void submit(Long interest_id){
-        JoinRequest.getSurveys(interest_id);
-        SignUpPage.mainFrame.change(SignUpPage.surveyPanel, SurveyPanel.class);
+        SurveyRequest.getSurveys(interest_id);
+
     }
 
-    public InterestSelectPanel(SignUpPage signUpPage){
-        this.signUpPage = signUpPage;
+    public InterestSelectPanel(MainFrame mainFrame){
+        InterestSelectPanel.mainFrame = mainFrame;
+        surveyPanel= new SurveyPanel(this);
         //패널2에서 관심분야 선택
         setSize(1100, 824);
         setLayout(null);

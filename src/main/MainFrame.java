@@ -4,6 +4,7 @@ package main;
 import forumPage.ForumPage;
 import loginPage.LoginPage;
 import signUpPage.SignUpPage;
+import surveyPage.InterestSelectPanel;
 import utils.Font;
 
 import javax.swing.*;
@@ -16,7 +17,7 @@ public class MainFrame extends JFrame {
     static public LoginPage loginPage;
     //static public MainFrame mainPage;
     static public SignUpPage joinPage;
-
+    static public InterestSelectPanel interestSelectPanel;
 
     public <T extends JComponent> void  change(Object page, Class<T> q){
         getContentPane().removeAll();
@@ -47,6 +48,7 @@ public class MainFrame extends JFrame {
     public static void main(String[] args){
         MainFrame mainFrame = new MainFrame();
         //mainFrame.mainPage = new mainPage(mainFrame);
+        interestSelectPanel = new InterestSelectPanel(mainFrame);
         loginPage = new LoginPage(mainFrame);
         joinPage = new SignUpPage(mainFrame);
         //mainFrame.forumPage = new forumPage(mainFrame);
