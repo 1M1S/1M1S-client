@@ -11,7 +11,7 @@ import java.net.http.HttpResponse;
 
 
 public class Request<RequestType,ResponseType>{
-    final String serverUri = "http://localhost:8080";
+    final String serverUri = "http://3.135.231.171";
     public static String xAccessToken = "";
     HttpRequest.BodyPublisher requestBody;
     ObjectMapper objectMapper = new ObjectMapper();
