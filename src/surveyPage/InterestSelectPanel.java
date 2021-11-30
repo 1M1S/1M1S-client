@@ -1,5 +1,6 @@
 package surveyPage;
 
+import db.Interest;
 import main.MainFrame;
 import signUpPage.JoinRequest;
 import signUpPage.SignUpPage;
@@ -15,10 +16,10 @@ import java.awt.*;
 
 public class InterestSelectPanel extends JPanel {
     static public MainFrame mainFrame;
-    static SurveyPanel surveyPanel;
+    static public SurveyPanel surveyPanel;
+    static public Interest interest;
     public void submit(Long interest_id){
         SurveyRequest.getSurveys(interest_id);
-
     }
 
     public InterestSelectPanel(MainFrame mainFrame){

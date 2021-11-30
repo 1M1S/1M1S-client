@@ -21,7 +21,6 @@ public class Request<RequestType,ResponseType>{
 
     public Request(String restUri){
         this.body = null;
-        System.out.println(xAccessToken);
         try{
             this.requestBody = HttpRequest.BodyPublishers.ofString(
                     objectMapper.writeValueAsString(body));
@@ -54,7 +53,9 @@ public class Request<RequestType,ResponseType>{
                             .GET()
                             .build()
                     , HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.headers());
+            if(response.headers().allValues("x-access-token").size() > 0)
+                Request.xAccessToken = response.headers().allValues("x-access-token").get(0);
+            else Request.xAccessToken = null;
             if(response.statusCode()/100 != 2){
                 CustomError error = (CustomError) objectMapper.readValue(response.body(), CustomError.class);
                 JOptionPane.showMessageDialog(null, error.message , "Message", JOptionPane.ERROR_MESSAGE);
@@ -73,6 +74,7 @@ public class Request<RequestType,ResponseType>{
     public ResponseType POST(Class<ResponseType> c){
         ObjectMapper objectMapper = new ObjectMapper();
         HttpClient client = HttpClient.newHttpClient();
+
         try{
             response = client.send(HttpRequest.newBuilder()
                             .uri(restUri)
@@ -81,14 +83,20 @@ public class Request<RequestType,ResponseType>{
                             .POST(requestBody)
                             .build()
                     , HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+            if(response.headers().allValues("x-access-token").size() > 0)
+                Request.xAccessToken = response.headers().allValues("x-access-token").get(0);
+            else Request.xAccessToken = null;
             if(response.statusCode()/100 != 2){
                 System.out.println(response.body());
                 CustomError error = (CustomError) objectMapper.readValue(response.body(), CustomError.class);
                 JOptionPane.showMessageDialog(null, error.message , "Message", JOptionPane.ERROR_MESSAGE);
             }
-            System.out.println(response.headers());
+
             result = (ResponseType) objectMapper.readValue(response.body(), c);
         }catch (Exception e){
+            System.out.println(response);
+
             System.out.println("POST " + restUri+" 요청에 실패했습니다.");
             System.out.println("에러 정보: "+e);
         }
@@ -107,7 +115,11 @@ public class Request<RequestType,ResponseType>{
                             .PUT(requestBody)
                             .build()
                     , HttpResponse.BodyHandlers.ofString());
+            if(response.headers().allValues("x-access-token").size() > 0)
+                Request.xAccessToken = response.headers().allValues("x-access-token").get(0);
+            else Request.xAccessToken = null;
             if(response.body().equals(""))return null;
+
             if(response.statusCode()/100 != 2){
                 CustomError error = (CustomError) objectMapper.readValue(response.body(), CustomError.class);
                 JOptionPane.showMessageDialog(null, error.message , "Message", JOptionPane.ERROR_MESSAGE);
@@ -133,7 +145,9 @@ public class Request<RequestType,ResponseType>{
                             .DELETE()
                             .build()
                     , HttpResponse.BodyHandlers.ofString());
-            System.out.println(response);
+            if(response.headers().allValues("x-access-token").size() > 0)
+                Request.xAccessToken = response.headers().allValues("x-access-token").get(0);
+            else Request.xAccessToken = null;
             if(response.statusCode()/100 != 2){
                 CustomError error = (CustomError) objectMapper.readValue(response.body(), CustomError.class);
                 JOptionPane.showMessageDialog(null, error.message , "Message", JOptionPane.ERROR_MESSAGE);

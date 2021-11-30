@@ -18,7 +18,6 @@ public class SurveyPanel extends JPanel {
     public InterestSelectPanel interestSelectPanel;
     public static RegisterSurvey[] surveys = null;
     public static Integer[] checked = null;
-    public static Interest interest = null;
     public static int page = 1;
 
 
