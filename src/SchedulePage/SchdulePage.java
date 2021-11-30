@@ -34,7 +34,6 @@ import javax.swing.table.TableCellRenderer;
 
 
 public class SchdulePage extends JFrame {
-    private JPanel currentPanel;
     private mainSchedulePanel mainPanel = new mainSchedulePanel();
     private dailyPanel DayPanel = new dailyPanel();
     private writePanel Add_panel = new writePanel();
@@ -47,15 +46,7 @@ public class SchdulePage extends JFrame {
     private JTable todoTable;
 
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-        public void run() {
-            try {
-                SchdulePage window = new SchdulePage();
-                window.setVisible(true);
-            } catch (Exception var2) {
-                var2.printStackTrace();
-            }
-        }});
+        new SchdulePage();
     }
 
     public SchdulePage() {
@@ -72,7 +63,7 @@ public class SchdulePage extends JFrame {
         add(Modify_panel);
 
         mainPanel.setVisible(true);
-        mainPanel.setSize(1115, 824);
+        mainPanel.setSize(1110, 824);
         mainPanel.setLayout((LayoutManager)null);
 
         JLabel pageTitle = new JLabel("What do you want?");
@@ -81,7 +72,7 @@ public class SchdulePage extends JFrame {
         pageTitle.setBounds(304, 220, 521, 85);
         mainPanel.add(pageTitle);
 
-        JButton mainPageRollBackBtn = new JButton(new ImageIcon(""));       ////////////////아이콘 추가하기
+        JButton mainPageRollBackBtn = new JButton(new ImageIcon("C:\\1M1S-client\\src\\SchedulePage\\rollback.png"));
         mainPageRollBackBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 mainPanel.setVisible(false);
@@ -95,11 +86,11 @@ public class SchdulePage extends JFrame {
         JLabel title = new JLabel("To Do List");
         title.setFont(new Font("나눔고딕", 1, 50));
         title.setHorizontalAlignment(0);
-        title.setBounds(121, 31, 748, 73);
+        title.setBounds(170, 35, 750, 70);
         DayPanel.add(title);
 
 
-        JButton chooseDayPageRollBackBtn = new JButton(new ImageIcon(""));       ////////////////아이콘 추가하기
+        JButton chooseDayPageRollBackBtn = new JButton(new ImageIcon("C:\\1M1S-client\\src\\SchedulePage\\rollback.png"));
         chooseDayPageRollBackBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 DayPanel.setVisible(false);
@@ -130,10 +121,10 @@ public class SchdulePage extends JFrame {
         todoTable.getTableHeader().setReorderingAllowed(false);
 
         // table scroll 추가
-        JScrollPane generalForumScrollPane = new JScrollPane(todoTable, 22, 31);
-        generalForumScrollPane.setVisible(true);
-        generalForumScrollPane.setBounds(130, 125, 787, 617);
-        DayPanel.add(generalForumScrollPane);
+        JScrollPane scroll = new JScrollPane(todoTable, 22, 31);
+        scroll.setVisible(true);
+        scroll.setBounds(130, 125, 787, 617);
+        DayPanel.add(scroll);
 
         JButton addButton = new JButton("Add");
         addButton.setFont(new Font("나눔고딕", 1, 15));
@@ -314,7 +305,7 @@ public class SchdulePage extends JFrame {
         panel.setBounds(330, 264, 452, 322);
         Add_panel.add(panel);panel.setLayout((LayoutManager)null);
 
-        JLabel lblPlan = new JLabel("Plan\r\n");
+        JLabel lblPlan = new JLabel("Plan");
         lblPlan.setFont(new Font("나눔고딕", 0, 25));
         lblPlan.setHorizontalAlignment(0);
         lblPlan.setBounds(12, 50, 83, 48);
@@ -431,7 +422,7 @@ public class SchdulePage extends JFrame {
                 Add_panel.setVisible(false);
             }
         });
-        JButton planPageRollBackBtn = new JButton(new ImageIcon(""));       ////////////////아이콘 추가하기
+        JButton planPageRollBackBtn = new JButton(new ImageIcon("C:\\1M1S-client\\src\\SchedulePage\\rollback.png"));
         planPageRollBackBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Add_panel.setVisible(false);
@@ -613,7 +604,7 @@ public class SchdulePage extends JFrame {
                 Modify_panel.setVisible(false);
             }
         });
-        JButton planPageRollBackBtn2 = new JButton(new ImageIcon(""));       ////////////////아이콘 추가하기
+        JButton planPageRollBackBtn2 = new JButton(new ImageIcon("C:\\1M1S-client\\src\\SchedulePage\\rollback.png"));
         planPageRollBackBtn2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Modify_panel.setVisible(false);
@@ -681,9 +672,6 @@ public class SchdulePage extends JFrame {
         int editRow = todoTable.getSelectedRow();
         if (editRow >= 0) {
             Long editId = (Long)todoTable.getModel().getValueAt(editRow, 0);  //Long user_id, Long member_schedule_id,
-//            String content = (String)todoTable.getModel().getValueAt(editRow,1);
-//            LocalDateTime startTime = (LocalDateTime)todoTable.getModel().getValueAt(editRow,2);
-//            LocalDateTime endTime = (LocalDateTime)todoTable.getModel().getValueAt(editRow,3);
 
             String uri = "http://localhost:8080";
             uri = uri + "/api/user/" + Long.toString(1L) + "/schedule/" + Long.toString(editId);
@@ -770,9 +758,6 @@ public class SchdulePage extends JFrame {
 
             // Jtable에 일정 추가
             for(MemberSchedule p : posts) {
-                //DefaultTableCellRenderer renderer = new MyDefaultTableCellRenderer();
-                //todoTable.getColumn("Finish").setCellRenderer(renderer);
-
                 dtm.addRow(new Object[] {
                         p.getId(), p.getContent(), p.getStartTime(), p.getEndTime(), p.getFinish()});
                 System.out.println(p);
@@ -790,7 +775,7 @@ public class SchdulePage extends JFrame {
         @Override
         public void paintComponent(Graphics g) {
             Dimension d = this.getSize();
-            ImageIcon image = new ImageIcon("C:\\Users\\brend\\eclipse-workspace\\swingPrac\\image\\2.png");
+            ImageIcon image = new ImageIcon("C:\\1M1S-client\\src\\SchedulePage\\schImg.png");
             g.drawImage(image.getImage(), 0, 0, d.width, d.height, (ImageObserver)null);
         }
     }
@@ -799,7 +784,7 @@ public class SchdulePage extends JFrame {
         @Override
         public void paintComponent(Graphics g) {
             Dimension d = this.getSize();
-            ImageIcon image = new ImageIcon("C:\\Users\\brend\\eclipse-workspace\\swingPrac\\image\\0.png");
+            ImageIcon image = new ImageIcon("C:\\1M1S-client\\src\\SchedulePage\\dailyImg.png");
             g.drawImage(image.getImage(), 0, 0, d.width, d.height, (ImageObserver)null);
         }
     }
@@ -808,7 +793,7 @@ public class SchdulePage extends JFrame {
         @Override
         public void paintComponent(Graphics g) {
             Dimension d = this.getSize();
-            ImageIcon image = new ImageIcon("C:\\Users\\brend\\eclipse-workspace\\swingPrac\\image\\14.png");
+            ImageIcon image = new ImageIcon("C:\\1M1S-client\\src\\SchedulePage\\writeImg.png");
             g.drawImage(image.getImage(), 0, 0, d.width, d.height, (ImageObserver)null);
         }
     }
