@@ -1,9 +1,8 @@
 package forumPage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import db.Comment;
-import db.Post;
-import main.MainFrame;
+import db.*;
+import utils.Images;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -16,7 +15,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Objects;
 
-public class ForumPage extends JPanel {
+import static forumPage.ForumRequest.modifyPost;
+
+public class ForumPage extends JFrame {
     private final Font mainFont = new Font("나눔고딕", Font.PLAIN, 20);
     private final Font smallFont = new Font("나눔고딕", Font.PLAIN, 17);
     private final Font tinyFont = new Font("나눔고딕", Font.PLAIN, 13);
@@ -30,8 +31,7 @@ public class ForumPage extends JPanel {
     private final myPanel panelClickPost = new myPanel();
     private final myPanel2 panelModifyPost = new myPanel2();
     //user_id DB에서 받아오기.
-    private final Long user_id = (long)1;
-    private int interest = 0; //관심분야, 1, 2, 3 순서대로 운동, 프로그래밍, 취업 0인 경우 자유 게시판 글
+    static public int interest = 0; //관심분야, 1, 2, 3 순서대로 운동, 프로그래밍, 취업 0인 경우 자유 게시판 글
     private String post_id;
 
     //테이블 선언
@@ -75,11 +75,15 @@ public class ForumPage extends JPanel {
     };
     private JTable commentTable = new JTable(comment_dtm);
     private JScrollPane commentScrollPane;
-    private MainFrame mainFrame;
-    public ForumPage(MainFrame mainFrame) {
-        this.mainFrame = mainFrame;
+
+    public ForumPage() {
         //프레임 설정
+        setTitle("1M1S-forum");
+        setVisible(true);
         setLayout(null);
+        setResizable(false);
+        setSize(1115, 824);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         add(panelForumGeneral);
         add(panelForumExercise);
         add(panelForumPrograming);
@@ -350,7 +354,7 @@ public class ForumPage extends JPanel {
         exerciseForumExerciseButton.addActionListener(e -> {
             interest = 1;
             updatePost(exercise_dtm);
-       });
+        });
         exerciseForumExerciseButton.setText("운동게시판");
         exerciseForumExerciseButton.setFont(mainFont);
         exerciseForumExerciseButton.setBounds(161, 20, 150, 80);
@@ -549,7 +553,7 @@ public class ForumPage extends JPanel {
 
         //글 추가 패널
         //되돌아가기 버튼
-        JButton addPostPageRollBackButton = new JButton(new ImageIcon(("C:\\Users\\Asus\\IdeaProjects\\1M1S-client\\src\\forumPage\\rollback.png")));
+        JButton addPostPageRollBackButton = new JButton(new ImageIcon(("C:\\Users\\Asus\\IdeaProjects\\1M1S-client\\src\\forumPage\\forumRollbackButton.png")));
         addPostPageRollBackButton.addActionListener(e -> {
             switch (interest) {
                 case 0 -> {
@@ -667,30 +671,12 @@ public class ForumPage extends JPanel {
     //게시판 업데이트 함수
     void updatePost(DefaultTableModel dtm){
         dtm.setRowCount(0); //테이블 초기화
-        try{
-            HttpClient client = HttpClient.newHttpClient();
-            ObjectMapper mapper = new ObjectMapper();
-
-            //request보내기
-            String uri = "http://localhost:8080/api/post?interest_id=" + interest;
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(uri))  // 위에서 만든 URI
-                    .GET()  // HTTP 메소드, body 지정(GET의 경우 생략 가능)
-                    .build();
-
-            // 위에서 생성한 request를 보내고, 받은 response를 저장
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            // responseBody to Post Class Array
-            Post[] posts = mapper.readValue(response.body(), Post[].class);
-
+            Post[] posts = ForumRequest.getPosts();
             // Jtable에 일정 추가
             for(Post p : posts) {
                 dtm.addRow(new Object[] {p.getId(), p.getInterest(), p.getTitle(), p.getContent()});
             }
-        }catch(Exception e){
-             System.out.println("게시글 업데이트 오류");
-             e.printStackTrace();
-        }
+
     }
 
     //***********************************************************************************************************************************************************************
@@ -699,30 +685,9 @@ public class ForumPage extends JPanel {
 
     //게시판 글 추가 함수
     void addPost(DefaultTableModel dtm, String title, String content) {
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            //request 보내기
-            String uri = "http://localhost:8080/api/user/" + user_id + "/post";
-            //request body
             Post post = new Post((long) interest, title, content);
-            String requestBody = objectMapper.writeValueAsString(post);
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(uri))
-                    .header("Content-Type", "application/json; charset=UTF-8")  // content type, 인코딩형식 지정.
-                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))  // HTTP 메소드, body 지정(위에서 만든 JSON 전달)
-                    .build();
-
-            //response
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            //update
+            ForumRequest.addPost(post);
             updatePost(dtm);
-        } catch (Exception ex) {
-            System.out.println("글 추가 오류");
-            ex.printStackTrace();
-        }
     }
 
     //***********************************************************************************************************************************************************************
@@ -740,7 +705,7 @@ public class ForumPage extends JPanel {
         panelClickPost.setVisible(true);
 
         //되돌아가기 버튼
-        JButton clickPageRollBackButton = new JButton(new ImageIcon(("C:\\Users\\Asus\\IdeaProjects\\1M1S-client\\src\\forumPage\\rollback.png")));
+        JButton clickPageRollBackButton = new JButton(Images.ForumRollbackButton.getImageIcon());
         clickPageRollBackButton.addActionListener(e -> {
             switch (interest) {
                 case 0 -> {
@@ -769,29 +734,10 @@ public class ForumPage extends JPanel {
         clickPageRollBackButton.setBounds(985, 110, 82, 82);
         clickPageRollBackButton.setContentAreaFilled(false);
         panelClickPost.add(clickPageRollBackButton);
+        int row = table.getSelectedRow();
+        post_id = String.valueOf(table.getValueAt(row, 0));
+        Post apost = ForumRequest.getPost(post_id);
 
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            HttpClient client = HttpClient.newHttpClient();
-
-            int row = table.getSelectedRow();
-            post_id = String.valueOf(table.getValueAt(row, 0));
-
-            //request 보내기
-            String uri = "http://localhost:8080/api/post/" + post_id;
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(uri))
-                    .header("Content-Type", "application/json; charset=UTF-8")  // content type, 인코딩형식 지정.
-                    .GET()
-                    .build();
-
-            //response
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            //responsebody to Post Clas
-            Post apost = objectMapper.readValue(response.body(), Post.class);
-
-            //apost의 내용을 패널에 출력
-            //카테고리
             String category = switch (interest) {
                 case 0 -> "자유게시판";
                 case 1 -> "운동게시판";
@@ -822,9 +768,7 @@ public class ForumPage extends JPanel {
             scrollClickPostContent.setBounds(35, 165, 800, 340);
             scrollClickPostContent.setVisible(true);
             panelClickPost.add(scrollClickPostContent);
-
-            //글 수정하기
-            if(Objects.equals(user_id, apost.getMember().getId())) {
+            if(ForumRequest.checkOwner(apost.getId().toString())) {
                 try {
                     //글 수정 버튼
                     JButton modifyButton = new JButton("글 수정");
@@ -843,67 +787,44 @@ public class ForumPage extends JPanel {
                     ex.printStackTrace();
                 }
 
-                try {
-                    //글 삭제 버튼
-                    JButton deleteButton = new JButton("글 삭제");
-                    deleteButton.addActionListener(e -> {
-                        int confirmDelete = JOptionPane.showConfirmDialog(null,
-                                "글을 삭제하시겠습니까?", "Message", JOptionPane.YES_NO_OPTION);
 
-                        if(confirmDelete == 0){
-                            HttpClient client1 = HttpClient.newHttpClient();
+                JButton deleteButton = new JButton("글 삭제");
+                deleteButton.addActionListener(e -> {
+                    int confirmDelete = JOptionPane.showConfirmDialog(null,
+                            "글을 삭제하시겠습니까?", "Message", JOptionPane.YES_NO_OPTION);
 
-                            //request 보내기
-                            String uri1 = "http://localhost:8080/api/user/" + user_id + "/post/" + post_id;
-                            HttpRequest request1 = HttpRequest.newBuilder()
-                                    .uri(URI.create(uri1))
-                                    .header("Content-Type", "application/json; charset=UTF-8")  // content type, 인코딩형식 지정.
-                                    .DELETE() //Delete는 body없어도 동작
-                                    .build();
-
-                            try {
-                                //response
-                                HttpResponse<String> response1 = client1.send(request1, HttpResponse.BodyHandlers.ofString());
-
-                                //패널전환
-                                switch (interest) {
-                                    case 0 -> {
-                                        updatePost(general_dtm);
-                                        panelForumGeneral.setVisible(true);
-                                        panelClickPost.setVisible(false);
-                                    }
-                                    case 1 -> {
-                                        updatePost(exercise_dtm);
-                                        panelForumExercise.setVisible(true);
-                                        panelClickPost.setVisible(false);
-                                    }
-                                    case 2 -> {
-                                        updatePost(programing_dtm);
-                                        panelForumPrograming.setVisible(true);
-                                        panelClickPost.setVisible(false);
-                                    }
-                                    case 3 -> {
-                                        updatePost(employ_dtm);
-                                        panelForumEmploy.setVisible(true);
-                                        panelClickPost.setVisible(false);
-                                    }
+                    if(confirmDelete == 0){
+                            ForumRequest.deletePost(apost);
+                            //패널전환
+                            switch (interest) {
+                                case 0 -> {
+                                    updatePost(general_dtm);
+                                    panelForumGeneral.setVisible(true);
+                                    panelClickPost.setVisible(false);
                                 }
-
-                            } catch (Exception ex) {
-                                System.out.println("글 삭제 응답오류");
-                                ex.printStackTrace();
+                                case 1 -> {
+                                    updatePost(exercise_dtm);
+                                    panelForumExercise.setVisible(true);
+                                    panelClickPost.setVisible(false);
+                                }
+                                case 2 -> {
+                                    updatePost(programing_dtm);
+                                    panelForumPrograming.setVisible(true);
+                                    panelClickPost.setVisible(false);
+                                }
+                                case 3 -> {
+                                    updatePost(employ_dtm);
+                                    panelForumEmploy.setVisible(true);
+                                    panelClickPost.setVisible(false);
+                                }
                             }
-                        }
-                    });
-                    deleteButton.setFont(mainFont);
-                    deleteButton.setBounds(970, 310, 110, 80);
-                    deleteButton.setContentAreaFilled(false);
-                    panelClickPost.add(deleteButton);
+                    }
+                });
+                deleteButton.setFont(mainFont);
+                deleteButton.setBounds(970, 310, 110, 80);
+                deleteButton.setContentAreaFilled(false);
+                panelClickPost.add(deleteButton);
 
-                } catch (Exception ex) {
-                    System.out.println("글 삭제 오류");
-                    ex.printStackTrace();
-                }
             }
 
             //댓글테이블 추가
@@ -920,7 +841,7 @@ public class ForumPage extends JPanel {
             panelClickPost.add(scrollAddComment);
 
             //댓글쓰기버튼
-            JButton addCommentButton = new JButton(new ImageIcon(("C:\\Users\\Asus\\IdeaProjects\\1M1S-client\\src\\forumPage\\comment.png")));
+            JButton addCommentButton = new JButton(new ImageIcon(("C:\\Users\\Asus\\IdeaProjects\\1M1S-client\\src\\forumPage\\commentAddButton.png")));
             addCommentButton.addActionListener(e -> {
                 if(!addCommentTextArea.equals("")){
                     addComment(addCommentTextArea.getText());
@@ -932,12 +853,6 @@ public class ForumPage extends JPanel {
             addCommentButton.setBounds(775, 695, 60, 60);
             addCommentButton.setContentAreaFilled(false);
             panelClickPost.add(addCommentButton);
-
-
-        } catch (Exception ex) {
-            System.out.println("글 클릭 오류");
-            ex.printStackTrace();
-        }
     }
 
     //***********************************************************************************************************************************************************************
@@ -986,7 +901,7 @@ public class ForumPage extends JPanel {
         panelModifyPost.setVisible(true);
 
         //되돌아가기 버튼
-        JButton modifyPostPageRollBackButton = new JButton(new ImageIcon(("C:\\Users\\Asus\\IdeaProjects\\1M1S-client\\src\\forumPage\\rollback.png")));
+        JButton modifyPostPageRollBackButton = new JButton(new ImageIcon(("C:\\Users\\Asus\\IdeaProjects\\1M1S-client\\src\\forumPage\\forumRollbackButton.png")));
         modifyPostPageRollBackButton.addActionListener(e -> {
             panelModifyPost.setVisible(false);
             panelClickPost.setVisible(true);
@@ -1033,24 +948,8 @@ public class ForumPage extends JPanel {
             }else if(modifyPostTitleTextField.getText().length() > 256){
                 JOptionPane.showMessageDialog(null, "최대 256자까지 작성 가능합니다.", "Message", JOptionPane.ERROR_MESSAGE);
             }else{
-                try {
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    HttpClient client = HttpClient.newHttpClient();
-
-                    //request 보내기
-                    String uri = "http://localhost:8080/api/user/" + user_id + "/post/" + post.getId();
-                    //request body
-                    Post modifyPost = new Post((long)interest, modifyPostTitleTextField.getText(), modifyPostContentTextArea.getText());
-                    String requestBody = objectMapper.writeValueAsString(modifyPost);
-                    HttpRequest request = HttpRequest.newBuilder()
-                            .uri(URI.create(uri))
-                            .header("Content-Type", "application/json; charset=UTF-8")  // content type, 인코딩형식 지정.
-                            .PUT(HttpRequest.BodyPublishers.ofString(requestBody))  // HTTP 메소드, body 지정(위에서 만든 JSON 전달)
-                            .build();
-
-                    //response
-                    HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
+                Post modifyPost = new Post(Long.valueOf(interest), modifyPostTitleTextField.getText(), modifyPostContentTextArea.getText());
+                ForumRequest.modifyPost(modifyPost);
                     modifyPostTitleTextField.setText("");
                     modifyPostContentTextArea.setText("");
 
@@ -1076,10 +975,6 @@ public class ForumPage extends JPanel {
                             updatePost(employ_dtm);
                         }
                     }
-                }catch (Exception exception){
-                    System.out.println("글 수정 오류");
-                    exception.printStackTrace();
-                }
             }
         });
         modifyPostSubmitButton.setText("수정하기");
@@ -1096,29 +991,9 @@ public class ForumPage extends JPanel {
     //댓글 업데이트
     private void updateComment() {
         comment_dtm.setRowCount(0); //테이블 초기화
-        try{
-            HttpClient client = HttpClient.newHttpClient();
-            ObjectMapper mapper = new ObjectMapper();
-
-            //request보내기
-            String uri = "http://localhost:8080/api/post/" + post_id + "/comment";
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(uri))  // 위에서 만든 URI
-                    .GET()  // HTTP 메소드, body 지정(GET의 경우 생략 가능)
-                    .build();
-
-            // 위에서 생성한 request를 보내고, 받은 response를 저장
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            // responseBody to Post Class Array
-            Comment[] comments = mapper.readValue(response.body(), Comment[].class);
-
-            // Jtable에 일정 추가
-            for(Comment c : comments) {
-                comment_dtm.addRow(new Object[] {c.getId(), c.getMember().getId(), c.getContent()});
-            }
-        }catch(Exception e){
-            System.out.println("댓글 업데이트 오류");
-            e.printStackTrace();
+        Comment[] comments = ForumRequest.getComments(post_id);
+        for(Comment c : comments) {
+            comment_dtm.addRow(new Object[] {c.getId(), c.getMember().getId(), c.getContent()});
         }
     }
 
@@ -1128,30 +1003,9 @@ public class ForumPage extends JPanel {
 
     //댓글 쓰기
     private void addComment(String content) {
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            //request 보내기
-            String uri = "http://localhost:8080/api/user/" + user_id + "/comment?post_id=" + post_id;
-            //request body
-            Comment comment = new Comment(content);
-            String requestBody = objectMapper.writeValueAsString(comment);
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(uri))
-                    .header("Content-Type", "application/json; charset=UTF-8")  // content type, 인코딩형식 지정.
-                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))  // HTTP 메소드, body 지정(위에서 만든 JSON 전달)
-                    .build();
-
-            //response
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            //update
-            updateComment();
-        } catch (Exception ex) {
-            System.out.println("댓글 추가 오류");
-            ex.printStackTrace();
-        }
+        Comment comment = new Comment(content);
+        ForumRequest.addComment(post_id, comment);
+        updateComment();
     }
 
     //***********************************************************************************************************************************************************************
@@ -1165,31 +1019,13 @@ public class ForumPage extends JPanel {
             if (e.getClickCount() == 2) {
                 int row = commentTable.getSelectedRow();
                 Long comment_id = (Long)comment_dtm.getValueAt(row, 0);
-                Long commentUser_id = (Long) comment_dtm.getValueAt(row, 1);
-                if(commentUser_id == user_id){
+                if(ForumRequest.checkOwner(comment_id)){
                     int confirmDelete = JOptionPane.showConfirmDialog(null,
                             "댓글을 삭제하시겠습니까?", "Message", JOptionPane.YES_NO_OPTION);
                     if(confirmDelete == 0){
-                        HttpClient client = HttpClient.newHttpClient();
-                        //request 보내기
-                        String uri = "http://localhost:8080/api/user/" + user_id + "/comment/" + comment_id;
-                        HttpRequest request = HttpRequest.newBuilder()
-                                .uri(URI.create(uri))
-                                .header("Content-Type", "application/json; charset=UTF-8")  // content type, 인코딩형식 지정.
-                                .DELETE() //Delete는 body없어도 동작
-                                .build();
-
-                        try {
-                            //response
-                            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-                            //업데이트
+                            ForumRequest.deleteComment(comment_id);
                             updateComment();
                             comment_dtm.fireTableDataChanged();
-                        } catch (Exception ex) {
-                            System.out.println("댓글 삭제 응답오류");
-                            ex.printStackTrace();
-                        }
                     }
                 }
             }
@@ -1204,7 +1040,7 @@ public class ForumPage extends JPanel {
         @Override
         public void paintComponent(Graphics g) {
             Dimension d = getSize();
-            ImageIcon image = new ImageIcon("C:\\Users\\Asus\\IdeaProjects\\1M1S-client\\src\\forumPage\\background5.png");
+            ImageIcon image = Images.ForumBackGround1.getImageIcon();
             g.drawImage(image.getImage(), 0, 0, d.width, d.height, null);
         }
     }
@@ -1212,7 +1048,7 @@ public class ForumPage extends JPanel {
         @Override
         public void paintComponent(Graphics g) {
             Dimension d = getSize();
-            ImageIcon image = new ImageIcon("C:\\Users\\Asus\\IdeaProjects\\1M1S-client\\src\\forumPage\\background6.png");
+            ImageIcon image = Images.ForumBackGround2.getImageIcon();
             g.drawImage(image.getImage(), 0, 0, d.width, d.height, null);
         }
     }

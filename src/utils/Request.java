@@ -9,6 +9,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 
+
 public class Request<RequestType,ResponseType>{
     final String serverUri = "http://localhost:8080";
     public static String xAccessToken = "";
@@ -16,14 +17,16 @@ public class Request<RequestType,ResponseType>{
     ObjectMapper objectMapper = new ObjectMapper();
     RequestType body;
     ResponseType result;
+
     HttpResponse<String> response;
+
     URI restUri;
 
     public Request(String restUri){
         this.body = null;
         try{
             this.requestBody = HttpRequest.BodyPublishers.ofString(
-                    objectMapper.writeValueAsString(body));
+                    objectMapper.writeValueAsString(null));
         }catch (Exception e){
             System.out.println(body.getClass().getName() + "타입을 문자열로 변환할 수 없습니다.");
             System.out.println("에러 정보: "+e);
@@ -40,6 +43,7 @@ public class Request<RequestType,ResponseType>{
             System.out.println(body.getClass().getName() + "타입을 문자열로 변환할 수 없습니다.");
             System.out.println("에러 정보: "+e);
         }
+
             this.restUri = URI.create(serverUri+restUri);
     }
 
@@ -61,15 +65,18 @@ public class Request<RequestType,ResponseType>{
                 JOptionPane.showMessageDialog(null, error.message , "Message", JOptionPane.ERROR_MESSAGE);
                 return null;
             }
+
             result = (ResponseType) objectMapper.readValue(response.body(), c);
         }catch (Exception e){
             System.out.println("GET " + restUri+" 요청에 실패했습니다.");
+
             System.out.println("에러 정보: "+e);
         }
 
 
         return result;
     }
+
 
     public ResponseType POST(Class<ResponseType> c){
         ObjectMapper objectMapper = new ObjectMapper();
@@ -79,10 +86,12 @@ public class Request<RequestType,ResponseType>{
             response = client.send(HttpRequest.newBuilder()
                             .uri(restUri)
                             .header("x-access-token", xAccessToken)
+
                             .header("Content-Type", "application/json; charset=UTF-8")
                             .POST(requestBody)
                             .build()
                     , HttpResponse.BodyHandlers.ofString());
+
             System.out.println(response.body());
             if(response.headers().allValues("x-access-token").size() > 0)
                 Request.xAccessToken = response.headers().allValues("x-access-token").get(0);
@@ -119,7 +128,6 @@ public class Request<RequestType,ResponseType>{
                 Request.xAccessToken = response.headers().allValues("x-access-token").get(0);
             else Request.xAccessToken = null;
             if(response.body().equals(""))return null;
-
             if(response.statusCode()/100 != 2){
                 CustomError error = (CustomError) objectMapper.readValue(response.body(), CustomError.class);
                 JOptionPane.showMessageDialog(null, error.message , "Message", JOptionPane.ERROR_MESSAGE);
@@ -132,9 +140,7 @@ public class Request<RequestType,ResponseType>{
         }
         return result;
     }
-
-
-    public void DELETE(){
+    public <T> ResponseType  DELETE(Class<T> c){
         ObjectMapper objectMapper = new ObjectMapper();
         HttpClient client = HttpClient.newHttpClient();
         try{
@@ -151,12 +157,13 @@ public class Request<RequestType,ResponseType>{
             if(response.statusCode()/100 != 2){
                 CustomError error = (CustomError) objectMapper.readValue(response.body(), CustomError.class);
                 JOptionPane.showMessageDialog(null, error.message , "Message", JOptionPane.ERROR_MESSAGE);
-                return;
+                return null;
             }
+            result = (ResponseType) objectMapper.readValue(response.body(), c);
         }catch (Exception e){
             System.out.println("DELETE " + restUri+" 요청에 실패했습니다.");
             System.out.println("에러 정보: "+e);
         }
-        return;
+        return result;
     }
 }

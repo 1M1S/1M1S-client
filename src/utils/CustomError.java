@@ -1,6 +1,5 @@
 package utils;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,4 +13,5 @@ public class CustomError {
     String error;
     String code;
     String message;
+
 }

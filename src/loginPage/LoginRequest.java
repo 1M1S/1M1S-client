@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import db.Member;
 import db.MemberInterest;
 import main.MainFrame;
+import mainPage.MainPage;
+import myPage.MyPage;
+import myPage.MyPageRequest;
 import surveyPage.InterestSelectPanel;
 import utils.Request;
 
@@ -19,6 +22,10 @@ public class LoginRequest {
             var checkMemberInterest = new Request<Void, MemberInterest[]>("/api/user/interest");
             var result = checkMemberInterest.GET(MemberInterest[].class);
             if(result.length == 0)LoginPage.mainFrame.change(LoginPage.mainFrame.interestSelectPanel, InterestSelectPanel.class);
+            else {
+                MyPage.me = MyPageRequest.getMe();
+                LoginPage.mainFrame.change(LoginPage.mainFrame.mainPage, MainPage.class);
+            };
         }catch (Exception e){
             Request.xAccessToken = "";
         }
