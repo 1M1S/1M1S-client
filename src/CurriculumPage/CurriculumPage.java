@@ -57,6 +57,16 @@ public class CurriculumPage extends JFrame {
         mainPanel.setSize(1110, 824);
         mainPanel.setLayout(null);
 
+        JButton mainPageRollBackBtn = new JButton(new ImageIcon("C:\\1M1S-client\\src\\CurriculumPage\\rollback.png"));
+        mainPageRollBackBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+                //mainPanel.setVisible(true);           //준화꺼랑 합친 후, main페이지 보여주기
+            }
+        });
+        mainPageRollBackBtn.setBounds(0, 0, 82, 82);
+        mainPanel.add(mainPageRollBackBtn);
+
         // 커리큘럼 항목 선택 테이블 설정(왼쪽 테이블)
         curriMainTable = new JTable(curriMainDtm);
         curriMainTable.setRowHeight(40);
@@ -154,15 +164,6 @@ public class CurriculumPage extends JFrame {
     /******************************************************************************************************************/
     // Main 커리큘럼
 
-    // 추가 시 해당 항목 색깔 변경 기능
-//     void changeState() {
-//         int editRow = curriMainTable.getSelectedRow();
-//         if (editRow >= 0) {
-//             //Long editId = (Long)curriMainTable.getModel().getValueAt(editRow, 0);
-//
-//         }
-//     }
-
     //일정 추가 기능 => GET
     void addMainTable(DefaultTableModel dtm) {
         try {
@@ -225,7 +226,7 @@ public class CurriculumPage extends JFrame {
             // Jtable에 일정 추가
             for(Curriculum p : posts) {
                 dtm.addRow(new Object[] {
-                        p.getId(),p.getInterest().getSubject(),p.getLevel(), false});
+                       p.getId(),"       "+p.getInterest().getSubject(),"        "+p.getLevel(), "     "+false});
                 System.out.println(p);
             }
             dtm.fireTableDataChanged();
@@ -272,7 +273,7 @@ public class CurriculumPage extends JFrame {
                 // Jtable에 일정 추가
                 for(CurriculumSchedule p : posts) {
                     dtm.addRow(new Object[] {
-                            p.getId(),p.getContent()});
+                            p.getId(),"  "+p.getContent()});
                     System.out.println(p);
                 }
                 dtm.fireTableDataChanged();
@@ -315,7 +316,7 @@ public class CurriculumPage extends JFrame {
                 for(int i=0; i<dtm.getRowCount(); i++) {
                     Long CurriId = (Long) curriMainTable.getModel().getValueAt(i, 0);
                     if(CurriId.equals(m.getCurriculum().getId())) {
-                        curriMainTable.getModel().setValueAt(true, i, 3);
+                        curriMainTable.getModel().setValueAt("     "+true, i, 3);
                         break;
                     }
                 }
@@ -390,8 +391,7 @@ public class CurriculumPage extends JFrame {
                 System.out.println("delUserCurri response: "+(String)response.body());
 
                 // 선택한 커리큘럼의 check여부 false로 변경.
-                curriMainTable.getModel().setValueAt(false, delRow,3);
-
+                curriMainTable.getModel().setValueAt("     "+false, delRow,3);
             } catch (Exception ex) {
                 System.out.println("오류 발생");
                 ex.printStackTrace();
@@ -410,7 +410,7 @@ public class CurriculumPage extends JFrame {
         @Override
         public void paintComponent(Graphics g) {
             Dimension d = this.getSize();
-            ImageIcon image = new ImageIcon();///이미지 수정하기
+            ImageIcon image = new ImageIcon("C:\\1M1S-client\\src\\CurriculumPage\\curriImg.png");
             g.drawImage(image.getImage(), 0, 0, d.width, d.height, (ImageObserver)null);
         }
     }
