@@ -1,8 +1,10 @@
 package main;
 
 
+import db.MemberInformation;
 import forumPage.ForumPage;
 import loginPage.LoginPage;
+import mainPage.MainPage;
 import signUpPage.SignUpPage;
 import surveyPage.InterestSelectPanel;
 import utils.Font;
@@ -13,9 +15,8 @@ import java.util.Enumeration;
 
 
 public class MainFrame extends JFrame {
-    static public ForumPage forumPage;
     static public LoginPage loginPage;
-    //static public MainFrame mainPage;
+    static public MainPage mainPage;
     static public SignUpPage joinPage;
     static public InterestSelectPanel interestSelectPanel;
 
@@ -47,16 +48,11 @@ public class MainFrame extends JFrame {
 
     public static void main(String[] args){
         MainFrame mainFrame = new MainFrame();
-        //mainFrame.mainPage = new mainPage(mainFrame);
+        mainFrame.mainPage = new MainPage(mainFrame);
         interestSelectPanel = new InterestSelectPanel(mainFrame);
         loginPage = new LoginPage(mainFrame);
         joinPage = new SignUpPage(mainFrame);
-        //mainFrame.forumPage = new forumPage(mainFrame);
         mainFrame.change(loginPage, LoginPage.class);
     }
 
-    public void paint(ImageIcon image){
-        super.paint(getGraphics());
-        getGraphics().drawImage(image.getImage(), 0, 0,this);
-    }
 }
