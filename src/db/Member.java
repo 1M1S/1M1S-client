@@ -16,4 +16,9 @@ public class Member {
         this.username = username;
         this.password = password;
     }
+    public Member(Long member_id, String username, String password){
+        this.username = username;
+        this.password = password;
+        this.id = member_id;
+    }
 }

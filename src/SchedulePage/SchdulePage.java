@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import db.MemberSchedule;
+import utils.Images;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -40,7 +41,7 @@ public class SchdulePage extends JFrame {
     private writePanel Modify_panel = new writePanel();
 
     //패널별로 요일 분류
-    private String choosePanelDate;
+    private static String choosePanelDate;
 
     private String[] header = new String[]{"id", "Content", "StartTime", "EndTime","Finish"};
     private JTable todoTable;
@@ -72,11 +73,10 @@ public class SchdulePage extends JFrame {
         pageTitle.setBounds(304, 220, 521, 85);
         mainPanel.add(pageTitle);
 
-        JButton mainPageRollBackBtn = new JButton(new ImageIcon("C:\\1M1S-client\\src\\SchedulePage\\rollback.png"));
+        JButton mainPageRollBackBtn = new JButton(Images.ForumRollbackButton.getImageIcon());
         mainPageRollBackBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 mainPanel.setVisible(false);
-                //main화면 setVisible(true);                                         ///준화꺼랑 합친 후에 추가하기
             }
         });
         mainPageRollBackBtn.setBounds(0, 0, 82, 82);
@@ -90,7 +90,7 @@ public class SchdulePage extends JFrame {
         DayPanel.add(title);
 
 
-        JButton chooseDayPageRollBackBtn = new JButton(new ImageIcon("C:\\1M1S-client\\src\\SchedulePage\\rollback.png"));
+        JButton chooseDayPageRollBackBtn = new JButton(Images.ForumRollbackButton.getImageIcon());
         chooseDayPageRollBackBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 DayPanel.setVisible(false);
@@ -604,7 +604,7 @@ public class SchdulePage extends JFrame {
                 Modify_panel.setVisible(false);
             }
         });
-        JButton planPageRollBackBtn2 = new JButton(new ImageIcon("C:\\1M1S-client\\src\\SchedulePage\\rollback.png"));
+        JButton planPageRollBackBtn2 = new JButton(Images.ForumRollbackButton.getImageIcon());
         planPageRollBackBtn2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Modify_panel.setVisible(false);
@@ -627,44 +627,13 @@ public class SchdulePage extends JFrame {
 
     //일정 추가 기능
     void addTable(DefaultTableModel dtm, String Content, LocalDateTime startTime, LocalDateTime endTime, Long interest_id) {
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            //user id DB에서 받아오기
-            Long user_id = Long.valueOf("1");
-
-            //request 보내기
-            String uri = "http://localhost:8080";
-            uri = uri + "/api/user/" + Long.toString(1L) + "/schedule";
 
             //request body 생성
             MemberSchedule addpost = new MemberSchedule(Content, startTime, endTime, null , interest_id); ////새로 생성 DB Post 클래스
-
-            //request
-            objectMapper.registerModule(new JavaTimeModule());
-            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-            String requestBody = objectMapper.writeValueAsString(addpost);
-            System.out.println("add requestBody : " + requestBody);
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(uri))
-                    .header("Content-Type", "application/json; charset=UTF-8")  // content type, 인코딩형식 지정.
-                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))  // HTTP 메소드, body 지정(위에서 만든 JSON 전달)
-                    .build();
-
-            //response
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("add response : " + response);
-            System.out.println("add response body : " + response.body());
-
+            ScheduleRequest.addMemberSchedule(addpost);
             //update
             getTodoList(dtm);
 
-        } catch (Exception ex) {
-            System.out.println("오류 발생");
-            ex.printStackTrace();
-        }
     }
 
     //일정 수정 기능
@@ -673,39 +642,8 @@ public class SchdulePage extends JFrame {
         if (editRow >= 0) {
             Long editId = (Long)todoTable.getModel().getValueAt(editRow, 0);  //Long user_id, Long member_schedule_id,
 
-            String uri = "http://localhost:8080";
-            uri = uri + "/api/user/" + Long.toString(1L) + "/schedule/" + Long.toString(editId);
-
-            try {
-                MemberSchedule modifypost = new MemberSchedule(Content, startTime, endTime, finish , interest_id);
-                HttpClient client = HttpClient.newHttpClient();
-
-                ObjectMapper objectMapper = new ObjectMapper();
-                objectMapper.registerModule(new JavaTimeModule());
-                objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-                String requestBody = objectMapper.writeValueAsString(modifypost);
-                System.out.println("modify requestBody : " + requestBody);
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(uri))
-                        .header("Content-Type", "application/json; charset=UTF-8")
-                        .PUT(HttpRequest.BodyPublishers.ofString(requestBody))
-                        .build();
-
-                //response
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                System.out.println("modify response : " + response);
-                System.out.println("modify response body : " + response.body());
-
-            } catch (JsonProcessingException var17) {
-                System.out.println("서버 요청 오류");
-                var17.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            //update
+            MemberSchedule modifypost = new MemberSchedule(Content, startTime, endTime, finish , interest_id);
+            ScheduleRequest.modifyMemberSchedule(modifypost, editId);
             getTodoList(dtm);
             JOptionPane.showMessageDialog((Component)null, "Edited");
         } else {
@@ -733,39 +671,12 @@ public class SchdulePage extends JFrame {
     // 일정 읽어오는 기능(새로고침)
     void getTodoList(DefaultTableModel dtm) {
         dtm.setRowCount(0);
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            ObjectMapper mapper = new ObjectMapper();
-
-            //request보내기
-            String uri = "http://localhost:8080";
-            uri = uri + "/api/user/" + Long.toString(1L) + "/schedule";
-            uri += "?search_time=" + getDayByDate(choosePanelDate);
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(uri))
-                    .GET()
-                    .build();
-            System.out.println("getTodoList request : " + request);
-
-            // 위에서 생성한 request를 보내고, 받은 response를 저장
-            HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-            System.out.println("getTodoList response : " + response);
-            System.out.println("getTodoList body : " + response.body());
-
-            // responseBody to Post Class Array
-            Iterable<MemberSchedule> posts = mapper.readValue(response.body(), new TypeReference<Iterable<MemberSchedule>>(){});
-
-            // Jtable에 일정 추가
+            MemberSchedule[] posts = ScheduleRequest.getMemberSchedules(getDayByDate(choosePanelDate));
             for(MemberSchedule p : posts) {
                 dtm.addRow(new Object[] {
                         p.getId(), p.getContent(), p.getStartTime(), p.getEndTime(), p.getFinish()});
                 System.out.println(p);
             }
-        } catch (Exception e) {
-            System.out.println("오류 발생");
-            e.printStackTrace();
-        }
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -775,7 +686,7 @@ public class SchdulePage extends JFrame {
         @Override
         public void paintComponent(Graphics g) {
             Dimension d = this.getSize();
-            ImageIcon image = new ImageIcon("C:\\1M1S-client\\src\\SchedulePage\\schImg.png");
+            ImageIcon image = Images.ScheduleBackground.getImageIcon();
             g.drawImage(image.getImage(), 0, 0, d.width, d.height, (ImageObserver)null);
         }
     }
@@ -784,7 +695,7 @@ public class SchdulePage extends JFrame {
         @Override
         public void paintComponent(Graphics g) {
             Dimension d = this.getSize();
-            ImageIcon image = new ImageIcon("C:\\1M1S-client\\src\\SchedulePage\\dailyImg.png");
+            ImageIcon image = Images.TodayScheduleBackground.getImageIcon();
             g.drawImage(image.getImage(), 0, 0, d.width, d.height, (ImageObserver)null);
         }
     }
@@ -793,7 +704,7 @@ public class SchdulePage extends JFrame {
         @Override
         public void paintComponent(Graphics g) {
             Dimension d = this.getSize();
-            ImageIcon image = new ImageIcon("C:\\1M1S-client\\src\\SchedulePage\\writeImg.png");
+            ImageIcon image = Images.WritePageBackground.getImageIcon();
             g.drawImage(image.getImage(), 0, 0, d.width, d.height, (ImageObserver)null);
         }
     }

@@ -22,7 +22,12 @@ public enum Images {
     MyPageBackGround(new ImageIcon("Images\\MyPageBackGround.png")),
     ForumRollbackButton(new ImageIcon("Images\\forumRollbackButton.png")),
     ConsultingBackground(new ImageIcon("Images\\consultingBackground.png")),
+    CurriculumBackground(new ImageIcon("Images\\curriculumBackGround.png")),
+    RankingPageBackground(new ImageIcon("Images\\rankingPageBackground.png")),
     MainPageBackGround(new ImageIcon("Images\\mainBackGround.png")),
+    ScheduleBackground(new ImageIcon("Images\\scheduleBackground.png")),
+    TodayScheduleBackground(new ImageIcon("Images\\todayScheduleBackground.png")),
+    WritePageBackground(new ImageIcon("Images\\writeScheduleBackground.png")),
     ForumBackGround1(new ImageIcon("Images\\forumBackGround1.png")),
     ForumBackGround2(new ImageIcon("Images\\forumBackGround2.png"));
     private final ImageIcon imageIcon;

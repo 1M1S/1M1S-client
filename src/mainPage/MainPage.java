@@ -1,6 +1,9 @@
 
 package mainPage;
 
+import CurriculumPage.CurriculumPage;
+import RankingPage.RankingPage;
+import SchedulePage.SchdulePage;
 import consultingPage.ConsultingPage;
 import db.MemberInformation;
 import forumPage.ForumPage;
@@ -46,6 +49,7 @@ public class MainPage extends JPanel {
         button2.addActionListener(e -> {
             //여기에 시간관리 페이지로 이동하는 부분 작성
             JOptionPane.showMessageDialog(null, "시간관리로 이동합니다.", "Message", JOptionPane.INFORMATION_MESSAGE);
+            new SchdulePage();
         });
         button2.setFont(mainFont);
         button2.setBounds(0, 110, 200, 110);
@@ -56,6 +60,7 @@ public class MainPage extends JPanel {
         button3.addActionListener(e -> {
             //여기에 랭킹 페이지로 이동하는 부분 작성
             JOptionPane.showMessageDialog(null, "랭킹으로 이동합니다.", "Message", JOptionPane.INFORMATION_MESSAGE);
+            new RankingPage();
         });
         button3.setFont(mainFont);
         button3.setBounds(0, 220, 200, 110);
@@ -79,7 +84,13 @@ public class MainPage extends JPanel {
 
         //커리큘럼 버튼 설정
         JButton button6 = new JButton("커리큘럼");
-        button6.addActionListener(e -> JOptionPane.showMessageDialog(null, "커리큘럼으로 이동합니다.", "Message", JOptionPane.INFORMATION_MESSAGE));
+        button6.addActionListener(e -> {
+            JOptionPane.showMessageDialog(null, "커리큘럼으로 이동합니다.", "Message", JOptionPane.INFORMATION_MESSAGE);
+            new CurriculumPage();
+            }
+
+
+        );
         button6.setFont(mainFont);
         button6.setBounds(0, 550, 200, 250);
         mainPanel.add(button6);

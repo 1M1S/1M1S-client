@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import db.Curriculum;
 import db.CurriculumSchedule;
 import db.MemberCurriculum;
+import utils.Images;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -57,7 +59,7 @@ public class CurriculumPage extends JFrame {
         mainPanel.setSize(1110, 824);
         mainPanel.setLayout(null);
 
-        JButton mainPageRollBackBtn = new JButton(new ImageIcon("C:\\1M1S-client\\src\\CurriculumPage\\rollback.png"));
+        JButton mainPageRollBackBtn = new JButton(Images.ForumRollbackButton.getImageIcon());
         mainPageRollBackBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -202,39 +204,16 @@ public class CurriculumPage extends JFrame {
     // Main 커리큘럼 읽어오기
     void getMainCurri(DefaultTableModel dtm) {
         dtm.setRowCount(0);
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            ObjectMapper mapper = new ObjectMapper();
-
-            //request보내기
-            String uri = "http://localhost:8080/api/curriculum";
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(uri))
-                    .GET()
-                    .build();
-            System.out.println("getMainCurri request : " + request);
-
-            // 위에서 생성한 request를 보내고, 받은 response를 저장
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("getMainCurri response : " + response);
-            System.out.println("getMainCurri body : " + response.body());
-
-            // responseBody to Post Class Array
-            Iterable<Curriculum> posts = mapper.readValue(response.body(), new TypeReference<Iterable<Curriculum>>(){});
+        Curriculum[] posts = CurriculumRequest.getCurriculums();
 
             // Jtable에 일정 추가
-            for(Curriculum p : posts) {
-                dtm.addRow(new Object[] {
-                       p.getId(),"       "+p.getInterest().getSubject(),"        "+p.getLevel(), "     "+false});
-                System.out.println(p);
-            }
-            dtm.fireTableDataChanged();
-            checkUserCurriculum(dtm);
-        } catch (Exception e) {
-            System.out.println("오류 발생");
-            e.printStackTrace();
+        for(Curriculum p : posts) {
+            dtm.addRow(new Object[] {
+                   p.getId(),"       "+p.getInterest().getSubject(),"        "+p.getLevel(), "     "+false});
+            System.out.println(p);
         }
+        dtm.fireTableDataChanged();
+        checkUserCurriculum(dtm);
     }
     /******************************************************************************************************************/
     // Sub 커리큘럼
@@ -246,29 +225,9 @@ public class CurriculumPage extends JFrame {
         int editRow = curriMainTable.getSelectedRow();
         if (editRow >= 0){
             Long curriculum_id = (Long)curriMainTable.getModel().getValueAt(editRow, 0);
-
             dtm.setRowCount(0);
-            try {
-                HttpClient client = HttpClient.newHttpClient();
-                ObjectMapper mapper = new ObjectMapper();
 
-                //request보내기
-                String uri = "http://localhost:8080/api/curriculum/";
-                uri = uri  + Long.toString(curriculum_id) + "/schedule";
-
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(uri))
-                        .GET()
-                        .build();
-                System.out.println("getSubCurri request : " + request);
-
-                // 위에서 생성한 request를 보내고, 받은 response를 저장
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                System.out.println("getSubCurri response : " + response);
-                System.out.println("getSubCurri body : " + response.body());
-
-                // responseBody to Post Class Array
-                Iterable<CurriculumSchedule> posts = mapper.readValue(response.body(), new TypeReference<Iterable<CurriculumSchedule>>(){});
+                CurriculumSchedule[] posts = CurriculumRequest.getCurriculumSchedules(curriculum_id);
 
                 // Jtable에 일정 추가
                 for(CurriculumSchedule p : posts) {
@@ -277,10 +236,6 @@ public class CurriculumPage extends JFrame {
                     System.out.println(p);
                 }
                 dtm.fireTableDataChanged();
-            } catch (Exception e) {
-                System.out.println("오류 발생");
-                e.printStackTrace();
-            }
         }
     }
 
@@ -290,24 +245,8 @@ public class CurriculumPage extends JFrame {
 
     // 유저의 커리큘럼 읽어오기 => GET
     void checkUserCurriculum(DefaultTableModel dtm) {
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            ObjectMapper mapper = new ObjectMapper();
 
-            // uri 생성
-            String uri = "http://localhost:8080/api/user/" + Long.toString(1) + "/curriculum";
-
-            // request 생성
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(uri))
-                    .GET()
-                    .build();
-
-            // 위에서 생성한 request를 보내고, 받은 response를 저장
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            // responseBody to Iterable<MemberCurriculum>
-            Iterable<MemberCurriculum> M = mapper.readValue(response.body(), new TypeReference<Iterable<MemberCurriculum>>(){});
+            MemberCurriculum[] M = CurriculumRequest.getMemberCurriculums();
 
             // MemberCurriculum에서 커리큘럼 id 가져와서 커리큘럼 목록 중에 id 일치하는 친구들 true로 변경.
             for(MemberCurriculum m : M) {
@@ -321,52 +260,19 @@ public class CurriculumPage extends JFrame {
                     }
                 }
             }
-        } catch (Exception e) {
-            System.out.println("오류 발생");
-            e.printStackTrace();
-        }
     }
 
     // 유저의 커리큘럼 추가
     void addUserCurri(DefaultTableModel dtm) {
         int addRow = curriMainTable.getSelectedRow();
         if (addRow >= 0) {
-            Long addCurriId = (Long) curriMainTable.getModel().getValueAt(addRow, 0);
-
-            String uri = "http://localhost:8080";
-            uri += "/api/user/" + Long.toString(1L) + "/curriculum/" + "?curriculum_id=" + Long.toString(addCurriId);
-
-            try {
-                HttpClient client = HttpClient.newHttpClient();
-                ObjectMapper mapper = new ObjectMapper();
-
-                //request body 생성
+            Long curriculum_id = (Long) curriMainTable.getModel().getValueAt(addRow, 0);
                 MemberCurriculum addpost = new MemberCurriculum();
-
-                //request
-                String requestBody = mapper.writeValueAsString(addpost);
-                System.out.println("addUserCurri requestBody : " + requestBody);
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(uri))
-                        .header("Content-Type", "application/json; charset=UTF-8")  // content type, 인코딩형식 지정.
-                        .POST(HttpRequest.BodyPublishers.ofString(requestBody))  // HTTP 메소드, body 지정(위에서 만든 JSON 전달)
-                        .build();
-
-                //response
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                System.out.println("addUserCurri response : " + response);
-                System.out.println("addUserCurri response body : " + response.body());
-
+                CurriculumRequest.addMemberCurriculum(curriculum_id,addpost);
                 // 선택한 커리큘럼의 check여부 true로 변경.
                 curriMainTable.getModel().setValueAt(true, addRow,3);
                 dtm.fireTableDataChanged();
-
                 JOptionPane.showMessageDialog((Component)null, "User-Curriculum added");
-            } catch (Exception ex) {
-                System.out.println("오류 발생");
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog((Component)null, "Unable To add");
-            }
         }
     }
 
@@ -374,33 +280,11 @@ public class CurriculumPage extends JFrame {
     void delUserCurri(DefaultTableModel dtm) {
 
         int delRow = curriMainTable.getSelectedRow();
-        if (delRow >= 0) {
             Long delCurriId = (Long)curriMainTable.getModel().getValueAt(delRow, 0);
-
-            String uri = "http://localhost:8080";
-            uri += "/api/user/" + Long.toString(1L) + "/curriculum/" + "?curriculum_id=" + Long.toString(delCurriId);
-
-            try {
-                HttpClient client = HttpClient.newHttpClient();
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(URI.create(uri))
-                        .DELETE()
-                        .build();
-
-                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-                System.out.println("delUserCurri response: "+(String)response.body());
-
-                // 선택한 커리큘럼의 check여부 false로 변경.
+            CurriculumRequest.deleteMemberCurriculum(delCurriId);
                 curriMainTable.getModel().setValueAt("     "+false, delRow,3);
-            } catch (Exception ex) {
-                System.out.println("오류 발생");
-                ex.printStackTrace();
-            }
             dtm.fireTableDataChanged();
             JOptionPane.showMessageDialog((Component)null, "User-Curriculum Deleted");
-        } else {
-            JOptionPane.showMessageDialog((Component)null, "Unable To Delete");
-        }
     }
 
 
@@ -410,7 +294,7 @@ public class CurriculumPage extends JFrame {
         @Override
         public void paintComponent(Graphics g) {
             Dimension d = this.getSize();
-            ImageIcon image = new ImageIcon("C:\\1M1S-client\\src\\CurriculumPage\\curriImg.png");
+            ImageIcon image = Images.CurriculumBackground.getImageIcon();
             g.drawImage(image.getImage(), 0, 0, d.width, d.height, (ImageObserver)null);
         }
     }

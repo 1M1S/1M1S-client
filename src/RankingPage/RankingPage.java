@@ -3,6 +3,8 @@ package RankingPage;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import db.Ranking;
+import utils.Images;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -48,7 +50,7 @@ public class RankingPage extends JFrame {
         title.setBounds(150, 90, 800, 70);
         mainRankPanel.add(title);
 
-        JButton mainPageRollBackBtn = new JButton(new ImageIcon("C:\\1M1S-client\\src\\RankingPage\\rollback.png"));
+        JButton mainPageRollBackBtn = new JButton(Images.ForumRollbackButton.getImageIcon());
         mainPageRollBackBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -171,37 +173,14 @@ public class RankingPage extends JFrame {
     // 관심분야별 상위 3명 랭커 출력 [GET]
     void getRanking(DefaultTableModel dtm,Long interest_id) {
         dtm.setRowCount(0);
-        try {
-            HttpClient client = HttpClient.newHttpClient();
-            ObjectMapper mapper = new ObjectMapper();
 
-            //request보내기
-            String uri = "http://localhost:8080/api/ranking/top3?interest_id="+Long.toString(interest_id);
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(uri))
-                    .GET()
-                    .build();
-            System.out.println("getUserRanking request : " + request);
-
-            // 위에서 생성한 request를 보내고, 받은 response를 저장
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("getUserRanking response : " + response);
-            System.out.println("getUserRanking body : " + response.body());
-
-            // responseBody to Post Class Array
-            Iterable<Ranking> posts = mapper.readValue(response.body(), new TypeReference<Iterable<Ranking>>(){});
+            Ranking[] posts = RankingRequest.getRankings(interest_id);
 
             // JTable에 관심분야별 3명의 랭커들 추가
             for(Ranking p : posts) {
                 String result = "         "+"[ID: "+p.getMember().getUsername()+", Score: "+p.getScore()+"]";
                 dtm.addRow(new String[]{result});
-                System.out.println(p);
             }
-        } catch (Exception e) {
-            System.out.println("오류 발생");
-            e.printStackTrace();
-        }
     }
 
 
@@ -210,7 +189,7 @@ public class RankingPage extends JFrame {
         @Override
         public void paintComponent(Graphics g) {
             Dimension d = this.getSize();
-            ImageIcon image = new ImageIcon("C:\\1M1S-client\\src\\RankingPage\\rankImg.png");
+            ImageIcon image = Images.RankingPageBackground.getImageIcon();
             g.drawImage(image.getImage(), 0, 0, d.width, d.height, (ImageObserver)null);
         }
     }

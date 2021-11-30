@@ -4,9 +4,7 @@ import db.Comment;
 import db.Member;
 import db.MemberInformation;
 import db.Post;
-import mainPage.MainPage;
 import utils.Request;
-
 
 
 public class MyPageRequest {

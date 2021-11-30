@@ -1,6 +1,8 @@
 package utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import javax.swing.*;
 import java.net.URI;
@@ -11,7 +13,7 @@ import java.net.http.HttpResponse;
 
 
 public class Request<RequestType,ResponseType>{
-    final String serverUri = "http://3.135.231.171";
+    final String serverUri = "http://localhost:8080";//"http://3.135.231.171";
     public static String xAccessToken = "";
     HttpRequest.BodyPublisher requestBody;
     ObjectMapper objectMapper = new ObjectMapper();
@@ -25,8 +27,11 @@ public class Request<RequestType,ResponseType>{
     public Request(String restUri){
         this.body = null;
         try{
+            objectMapper.registerModule(new JavaTimeModule());
+            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             this.requestBody = HttpRequest.BodyPublishers.ofString(
                     objectMapper.writeValueAsString(null));
+
         }catch (Exception e){
             System.out.println(body.getClass().getName() + "타입을 문자열로 변환할 수 없습니다.");
             System.out.println("에러 정보: "+e);
@@ -37,6 +42,8 @@ public class Request<RequestType,ResponseType>{
     public Request(String restUri, RequestType body){
         this.body = body;
         try{
+            objectMapper.registerModule(new JavaTimeModule());
+            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             this.requestBody = HttpRequest.BodyPublishers.ofString(
                     objectMapper.writeValueAsString(body));
         }catch (Exception e){
@@ -44,7 +51,7 @@ public class Request<RequestType,ResponseType>{
             System.out.println("에러 정보: "+e);
         }
 
-            this.restUri = URI.create(serverUri+restUri);
+        this.restUri = URI.create(serverUri+restUri);
     }
 
     public ResponseType GET(Class<ResponseType> c){
