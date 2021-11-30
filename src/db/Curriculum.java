@@ -9,5 +9,5 @@ public class Curriculum {
     private Long id;
     private String name;
     private Interest interest;
-    private Integer level;
+    private String level;
 }
