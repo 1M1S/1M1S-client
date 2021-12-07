@@ -10,4 +10,5 @@ public class Curriculum {
     private String name;
     private Interest interest;
     private String level;
+
 }

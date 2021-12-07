@@ -1,7 +1,9 @@
 package forumPage;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.tools.javac.Main;
 import db.*;
+import main.MainFrame;
 import utils.Images;
 
 import javax.swing.*;
@@ -76,10 +78,12 @@ public class ForumPage extends JFrame {
     };
     private JTable commentTable = new JTable(comment_dtm);
     private JScrollPane commentScrollPane;
-
-    public ForumPage() {
+    public static MainFrame mainFrame;
+    public ForumPage(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
         //프레임 설정
         interest = ForumRequest.getInterest(0L);
+        setLocationRelativeTo(null);
         setTitle("1M1S-forum");
         setVisible(true);
         setLayout(null);
@@ -951,7 +955,7 @@ public class ForumPage extends JFrame {
             }else if(modifyPostTitleTextField.getText().length() > 256){
                 JOptionPane.showMessageDialog(null, "최대 256자까지 작성 가능합니다.", "Message", JOptionPane.ERROR_MESSAGE);
             }else{
-                Post modifyPost = new Post(interest, modifyPostTitleTextField.getText(), modifyPostContentTextArea.getText());
+                Post modifyPost = new Post(post.getId(),interest, modifyPostTitleTextField.getText(), modifyPostContentTextArea.getText());
                 ForumRequest.modifyPost(modifyPost);
                     modifyPostTitleTextField.setText("");
                     modifyPostContentTextArea.setText("");

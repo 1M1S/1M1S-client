@@ -38,7 +38,7 @@ public class MainPage extends JPanel {
         //마이페이지 버튼 설정
         JButton button1 = new JButton("회원 정보");
         button1.addActionListener(e -> {
-            MyPage mypage = new MyPage();
+            MyPage mypage = new MyPage(mainFrame);
         });
         button1.setFont(mainFont);
         button1.setBounds(0, 0, 200, 110);
@@ -49,7 +49,7 @@ public class MainPage extends JPanel {
         button2.addActionListener(e -> {
             //여기에 시간관리 페이지로 이동하는 부분 작성
             JOptionPane.showMessageDialog(null, "시간관리로 이동합니다.", "Message", JOptionPane.INFORMATION_MESSAGE);
-            new SchdulePage();
+            new SchdulePage(mainFrame);
         });
         button2.setFont(mainFont);
         button2.setBounds(0, 110, 200, 110);
@@ -60,7 +60,7 @@ public class MainPage extends JPanel {
         button3.addActionListener(e -> {
             //여기에 랭킹 페이지로 이동하는 부분 작성
             JOptionPane.showMessageDialog(null, "랭킹으로 이동합니다.", "Message", JOptionPane.INFORMATION_MESSAGE);
-            new RankingPage();
+            new RankingPage(mainFrame);
         });
         button3.setFont(mainFont);
         button3.setBounds(0, 220, 200, 110);
@@ -76,7 +76,7 @@ public class MainPage extends JPanel {
         //게시판 버튼 설정
         JButton button5 = new JButton("게시판");
         button5.addActionListener(e -> {
-            new ForumPage();
+            new ForumPage(mainFrame);
         });
         button5.setFont(mainFont);
         button5.setBounds(0, 440, 200, 110);

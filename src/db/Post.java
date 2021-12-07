@@ -25,4 +25,10 @@ public class Post {
         this.title = title;
         this.content = content;
     }
+    public Post(Long id, Interest interest, String title, String content){
+        this.id = id;
+        this.interest = interest;
+        this.title = title;
+        this.content = content;
+    }
 }

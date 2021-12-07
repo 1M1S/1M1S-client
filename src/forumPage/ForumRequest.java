@@ -5,6 +5,7 @@ import db.Comment;
 import db.Interest;
 import db.MemberInformation;
 import db.Post;
+import main.MainFrame;
 import utils.Request;
 
 import javax.swing.table.DefaultTableModel;
@@ -14,9 +15,14 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class ForumRequest {
+    public static MainFrame mainFrame;
+
     public static Post[] getPosts(){
+        mainFrame = ForumPage.mainFrame;
         var request = new Request<Void, Post[]>("/api/post?interest_id=" + ForumPage.interest.getId());
-        return request.GET(Post[].class);
+        Post[] res = request.GET(Post[].class);
+
+        return res;
     }
 
     public static Post addPost(Post newPost){
@@ -31,14 +37,15 @@ public class ForumRequest {
     }
 
     public static Post modifyPost(Post newPost){
-        var request = new Request<Post, Post>("/api/post/" + newPost.getId(), newPost);
+        System.out.println(newPost.getId());
+        var request = new Request<Post, Post>("/api/user/post/" + newPost.getId(), newPost);
         return request.PUT(Post.class);
 
     }
 
     public static Post deletePost(Post newPost){
-        var request = new Request<Post, Post>("/api/post/" + newPost.getId());
-        return request.PUT(Post.class);
+        var request = new Request<Post, Post>("/api/user/post/" + newPost.getId());
+        return request.DELETE(Post.class);
 
     }
 

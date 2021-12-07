@@ -3,6 +3,8 @@ package myPage;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import db.*;
+import loginPage.LoginPage;
+import main.MainFrame;
 import mainPage.MainPage;
 import utils.Images;
 
@@ -11,29 +13,28 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+
 
 public class MyPage extends JFrame {
     private final Font mainFont = new Font("나눔고딕", Font.PLAIN, 20);
-    private final Font smallFont = new Font("나눔고딕", Font.PLAIN, 17);
-    private final Font tinyFont = new Font("나눔고딕", Font.PLAIN, 13);
-    private final Font bigFont = new Font("나눔고딕", Font.PLAIN, 25);
-    private final Font giantFont = new Font("나눔고딕", Font.BOLD, 35);
     private final myPanel panel = new myPanel();
     public static MemberInformation me = null;
+    public static MainFrame mainFrame;
     //user_id 받아서 사용
-    private final Long user_id = (long)1;
-    public MyPage() {
+    public MyPage(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
         me = MyPageRequest.getMe();
+        if(me == null) {
+            mainFrame.change(mainFrame.loginPage, LoginPage.class);
+            this.dispose();
+        }
         //프레임 설정
         setTitle("1M1S-myPage");
         setVisible(true);
         setLayout(null);
         setResizable(false);
         setSize(1115, 824);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         add(panel);
         //***********************************************************************************************************************************************************************

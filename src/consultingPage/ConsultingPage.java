@@ -22,6 +22,7 @@ public class ConsultingPage extends JFrame {
         setLayout(null);
         setResizable(false);
         setSize(1115, 824);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         add(panel1);
         add(panel2);

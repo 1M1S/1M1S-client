@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import db.MemberSchedule;
+import main.MainFrame;
 import utils.Images;
 
 import java.awt.Component;
@@ -45,19 +46,15 @@ public class SchdulePage extends JFrame {
 
     private String[] header = new String[]{"id", "Content", "StartTime", "EndTime","Finish"};
     private JTable todoTable;
-
-    public static void main(String[] args) {
-        new SchdulePage();
-    }
-
-    public SchdulePage() {
+    public static MainFrame mainFrame;
+    public SchdulePage(MainFrame mainFrame) {
+        this.mainFrame = mainFrame;
         setTitle("1M1S");
         setVisible(true);
         setLayout(null);
         setResizable(true);
         setSize(1115, 824);
         setLocationRelativeTo((Component)null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         add(mainPanel);
         add(DayPanel);
         add(Add_panel);
@@ -76,7 +73,7 @@ public class SchdulePage extends JFrame {
         JButton mainPageRollBackBtn = new JButton(Images.ForumRollbackButton.getImageIcon());
         mainPageRollBackBtn.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                mainPanel.setVisible(false);
+                dispose();
             }
         });
         mainPageRollBackBtn.setBounds(0, 0, 82, 82);

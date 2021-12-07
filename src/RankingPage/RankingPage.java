@@ -3,6 +3,7 @@ package RankingPage;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import db.Ranking;
+import main.MainFrame;
 import utils.Images;
 
 import javax.swing.*;
@@ -26,11 +27,13 @@ public class RankingPage extends JFrame {
     private DefaultTableModel jobDtm;
     private JTable programTable;
     private DefaultTableModel programDtm;
+    public static MainFrame mainFrame;
     public static void main(String[] args) {
-        new RankingPage();
+        new RankingPage(mainFrame);
     }
 
-    public RankingPage(){
+    public RankingPage(MainFrame mainFrame){
+        this.mainFrame = mainFrame;
         setTitle("1M1S");
         setVisible(true);
         setLayout(null);

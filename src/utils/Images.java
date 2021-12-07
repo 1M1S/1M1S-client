@@ -28,7 +28,8 @@ public enum Images {
     ScheduleBackground(new ImageIcon("Images\\scheduleBackground.png")),
     TodayScheduleBackground(new ImageIcon("Images\\todayScheduleBackground.png")),
     WritePageBackground(new ImageIcon("Images\\writeScheduleBackground.png")),
-    ForumBackGround1(new ImageIcon("Images\\forumBackGround1.png")),
+    ForumBackGround1(new ImageIcon("Images\\forumBackGround1.jpg")),
+    QuitBackGround1(new ImageIcon("Images\\QuitPageBackGround.png")),
     ForumBackGround2(new ImageIcon("Images\\forumBackGround2.png"));
     private final ImageIcon imageIcon;
 }
