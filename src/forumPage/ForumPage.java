@@ -955,7 +955,7 @@ public class ForumPage extends JFrame {
             }else if(modifyPostTitleTextField.getText().length() > 256){
                 JOptionPane.showMessageDialog(null, "최대 256자까지 작성 가능합니다.", "Message", JOptionPane.ERROR_MESSAGE);
             }else{
-                Post modifyPost = new Post(post.getId(),interest, modifyPostTitleTextField.getText(), modifyPostContentTextArea.getText());
+                Post modifyPost = new Post(post.getId(), modifyPostTitleTextField.getText(), modifyPostContentTextArea.getText());
                 ForumRequest.modifyPost(modifyPost);
                     modifyPostTitleTextField.setText("");
                     modifyPostContentTextArea.setText("");

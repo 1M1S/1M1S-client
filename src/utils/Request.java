@@ -44,6 +44,7 @@ public class Request<RequestType,ResponseType>{//;//
         try{
             objectMapper.registerModule(new JavaTimeModule());
             objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            System.out.println( objectMapper.writeValueAsString(body));
             this.requestBody = HttpRequest.BodyPublishers.ofString(
                     objectMapper.writeValueAsString(body));
         }catch (Exception e){
@@ -123,6 +124,7 @@ public class Request<RequestType,ResponseType>{//;//
     public ResponseType PUT(Class<ResponseType> c){
         ObjectMapper objectMapper = new ObjectMapper();
         HttpClient client = HttpClient.newHttpClient();
+        System.out.println();
         try{
             response = client.send(HttpRequest.newBuilder()
                             .uri(restUri)
