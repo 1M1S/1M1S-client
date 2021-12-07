@@ -58,7 +58,12 @@ public class RankingPage extends JFrame {
 /******************************************************************************************************************/
 
         // 랭킹 순서 테이블
-        rankingDtm = new DefaultTableModel(0, 0);
+        rankingDtm = new DefaultTableModel(0, 0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         rankingTable = new JTable(rankingDtm);
         rankingTable.setRowHeight(80);
         rankingTable.setFont(new Font("나눔고딕", Font.PLAIN, 15));
@@ -86,7 +91,12 @@ public class RankingPage extends JFrame {
 /******************************************************************************************************************/
 
         // 랭킹 "운동" 테이블 설정
-        workoutDtm = new DefaultTableModel(0, 0);
+        workoutDtm = new DefaultTableModel(0, 0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         workoutTable = new JTable(workoutDtm);
         workoutTable.setRowHeight(80);
         workoutTable.setFont(new Font("나눔고딕", Font.PLAIN, 15));
@@ -112,7 +122,12 @@ public class RankingPage extends JFrame {
 /******************************************************************************************************************/
 
         // 랭킹 "취업" 테이블 설정
-        jobDtm = new DefaultTableModel(0, 0);
+        jobDtm = new DefaultTableModel(0, 0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         jobTable = new JTable(jobDtm);
         jobTable.setRowHeight(80);
         jobTable.setFont(new Font("나눔고딕", Font.PLAIN, 15));
@@ -139,7 +154,12 @@ public class RankingPage extends JFrame {
 /******************************************************************************************************************/
 
         // 랭킹 "프로그래밍" 테이블 설정
-        programDtm = new DefaultTableModel(0, 0);
+        programDtm = new DefaultTableModel(0, 0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         programTable = new JTable(programDtm);
         programTable.setRowHeight(80);
         programTable.setFont(new Font("나눔고딕", Font.PLAIN, 15));

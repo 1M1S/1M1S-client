@@ -513,79 +513,74 @@ public class SchdulePage extends JFrame {
         btnSave2.setFont(new Font("나눔고딕", 0, 25));
         btnSave2.setBounds(651, 653, 136, 31);
         Modify_panel.add(btnSave2);
-        btnSave2.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+        btnSave2.addActionListener(e -> {
+            String startTimeStr2 = txtStart2.getText();
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-LL-dd HH:mm:ss");
+            LocalDateTime startTime2 = LocalDateTime.parse(startTimeStr2, dateTimeFormatter);
+            System.out.println(startTime2);
 
-                String startTimeStr2 = txtStart2.getText();
-                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-LL-dd HH:mm:ss");
-                LocalDateTime startTime2 = LocalDateTime.parse(startTimeStr2, dateTimeFormatter);
-                System.out.println(startTime2);
+            String endTimeStr2 = txtEnd2.getText();
+            LocalDateTime endTime2 = LocalDateTime.parse(endTimeStr2, dateTimeFormatter);
+            System.out.println(endTime2);
 
-                String endTimeStr2 = txtEnd2.getText();
-                LocalDateTime endTime2 = LocalDateTime.parse(endTimeStr2, dateTimeFormatter);
-                System.out.println(endTime2);
-
-                Boolean isSelected2=false;
-                int i=1;
-                for(;i<=interestRadio2.length;i++){
-                    if(interestRadio2[i-1].isSelected()){  //true인 경우
-                        isSelected2 = true;
-                        break;
-                    }
+            Boolean isSelected2=false;
+            int i=1;
+            for(;i<=interestRadio2.length;i++){
+                if(interestRadio2[i-1].isSelected()){  //true인 경우
+                    isSelected2 = true;
+                    break;
                 }
-
-                Long interest_id2 = null;
-                if(isSelected2){
-                    interest_id2 = Long.valueOf(i+"");
-                }
-
-
-                Boolean isFinishSelected = false;
-                Boolean isFinish = false;
-                if(rdbtnYes.isSelected()){
-                    isFinishSelected=true;
-                    isFinish = true;
-                } else if(rdbtnNo.isSelected()){
-                    isFinishSelected=true;
-                }
-
-                if (txtPlan2.getText().equals("")) {
-                    JOptionPane.showMessageDialog((Component)null, "계획을 입력해주세요.", "Message", 0);
-                } else if (txtStart2.getText().equals("")) {
-                    JOptionPane.showMessageDialog((Component)null, "시작시간을 입력해주세요.", "Message", 0);
-                } else if (txtEnd2.getText().equals("")) {
-                    JOptionPane.showMessageDialog((Component)null, "종료시간을 입력해주세요.", "Message", 0);
-                } else if (isSelected2 == false ) {
-                    JOptionPane.showMessageDialog((Component)null, "관심사를 선택해주세요.", "Message", 0);
-                } else if (isFinishSelected == false ) {
-                    JOptionPane.showMessageDialog((Component)null, "완료여부를 선택해주세요.", "Message", 0);
-                } else {
-                    modifyTable(dtm, txtPlan2.getText(), startTime2, endTime2, isFinish, interest_id2);  //user_id, member_schedule_id,
-                    txtPlan2.setText("");
-                    txtStart2.setText("");
-                    txtEnd2.setText("");
-                    rdbtnYes.setSelected(false);
-                    rdbtnNo.setSelected(false);
-                    interestRadio2[i-1].setSelected(false);
-                }
-                DayPanel.setVisible(true);
-                Modify_panel.setVisible(false);
             }
-        });
-        JButton planPageRollBackBtn2 = new JButton(Images.ForumRollbackButton.getImageIcon());
-        planPageRollBackBtn2.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                Modify_panel.setVisible(false);
-                DayPanel.setVisible(true);
-                //null로 처리
+
+            Long interest_id2 = null;
+            if(isSelected2){
+                interest_id2 = Long.valueOf(i+"");
+            }
+
+
+            Boolean isFinishSelected = false;
+            Boolean isFinish = false;
+            if(rdbtnYes.isSelected()){
+                isFinishSelected=true;
+                isFinish = true;
+            } else if(rdbtnNo.isSelected()){
+                isFinishSelected=true;
+            }
+
+            if (txtPlan2.getText().equals("")) {
+                JOptionPane.showMessageDialog((Component)null, "계획을 입력해주세요.", "Message", 0);
+            } else if (txtStart2.getText().equals("")) {
+                JOptionPane.showMessageDialog((Component)null, "시작시간을 입력해주세요.", "Message", 0);
+            } else if (txtEnd2.getText().equals("")) {
+                JOptionPane.showMessageDialog((Component)null, "종료시간을 입력해주세요.", "Message", 0);
+            } else if (isSelected2 == false ) {
+                JOptionPane.showMessageDialog((Component)null, "관심사를 선택해주세요.", "Message", 0);
+            } else if (isFinishSelected == false ) {
+                JOptionPane.showMessageDialog((Component)null, "완료여부를 선택해주세요.", "Message", 0);
+            } else {
+                modifyTable(dtm, txtPlan2.getText(), startTime2, endTime2, isFinish, interest_id2);  //user_id, member_schedule_id,
                 txtPlan2.setText("");
                 txtStart2.setText("");
                 txtEnd2.setText("");
-                for(int i=0;i< interestRadio2.length;i++)
-                    interestRadio2[i].setSelected(false);
                 rdbtnYes.setSelected(false);
                 rdbtnNo.setSelected(false);
+                interestRadio2[i-1].setSelected(false);
             }
+            DayPanel.setVisible(true);
+            Modify_panel.setVisible(false);
+        });
+        JButton planPageRollBackBtn2 = new JButton(Images.ForumRollbackButton.getImageIcon());
+        planPageRollBackBtn2.addActionListener(e -> {
+            Modify_panel.setVisible(false);
+            DayPanel.setVisible(true);
+            //null로 처리
+            txtPlan2.setText("");
+            txtStart2.setText("");
+            txtEnd2.setText("");
+            for(int i=0;i< interestRadio2.length;i++)
+                interestRadio2[i].setSelected(false);
+            rdbtnYes.setSelected(false);
+            rdbtnNo.setSelected(false);
         });
         planPageRollBackBtn2.setBounds(0, 0, 82, 82);
         Modify_panel.add(planPageRollBackBtn2);

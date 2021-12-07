@@ -58,8 +58,8 @@ public class ForumRequest {
     }
 
     public static boolean checkOwner(Long comment_id){
-        var request = new Request<Void, Comment>("/api/comment/"+comment_id);
-        return request.GET(Comment.class) != null;
+        var request = new Request<Void, Boolean>("/api/user/comment/"+comment_id);
+        return request.GET(Boolean.class);
     }
 
     public static Interest getInterest(Long interest_id){
