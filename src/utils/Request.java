@@ -3,25 +3,20 @@ package utils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
 import javax.swing.*;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-
-
-public class Request<RequestType,ResponseType>{//;//
+public class Request<RequestType,ResponseType>{
     final String serverUri = "http://3.135.231.171";
     public static String xAccessToken = "";
     HttpRequest.BodyPublisher requestBody;
     ObjectMapper objectMapper = new ObjectMapper();
     RequestType body;
     ResponseType result;
-
     HttpResponse<String> response;
-
     URI restUri;
 
     public Request(String restUri){
@@ -31,7 +26,6 @@ public class Request<RequestType,ResponseType>{//;//
             objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
             this.requestBody = HttpRequest.BodyPublishers.ofString(
                     objectMapper.writeValueAsString(null));
-
         }catch (Exception e){
             System.out.println(body.getClass().getName() + "타입을 문자열로 변환할 수 없습니다.");
             System.out.println("에러 정보: "+e);
@@ -51,7 +45,6 @@ public class Request<RequestType,ResponseType>{//;//
             System.out.println(body.getClass().getName() + "타입을 문자열로 변환할 수 없습니다.");
             System.out.println("에러 정보: "+e);
         }
-
         this.restUri = URI.create(serverUri+restUri);
     }
 
@@ -80,8 +73,6 @@ public class Request<RequestType,ResponseType>{//;//
 
             System.out.println("에러 정보: "+e);
         }
-
-
         return result;
     }
 
@@ -89,7 +80,6 @@ public class Request<RequestType,ResponseType>{//;//
     public ResponseType POST(Class<ResponseType> c){
         ObjectMapper objectMapper = new ObjectMapper();
         HttpClient client = HttpClient.newHttpClient();
-
         try{
             response = client.send(HttpRequest.newBuilder()
                             .uri(restUri)
@@ -109,7 +99,6 @@ public class Request<RequestType,ResponseType>{//;//
                 CustomError error = (CustomError) objectMapper.readValue(response.body(), CustomError.class);
                 JOptionPane.showMessageDialog(null, error.message , "Message", JOptionPane.ERROR_MESSAGE);
             }
-
             result = (ResponseType) objectMapper.readValue(response.body(), c);
         }catch (Exception e){
             System.out.println(response);
@@ -117,7 +106,6 @@ public class Request<RequestType,ResponseType>{//;//
             System.out.println("POST " + restUri+" 요청에 실패했습니다.");
             System.out.println("에러 정보: "+e);
         }
-
         return result;
     }
 

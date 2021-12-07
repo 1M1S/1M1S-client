@@ -1,21 +1,12 @@
 package main;
 
-
-import db.MemberInformation;
-import forumPage.ForumPage;
 import loginPage.LoginPage;
-import lombok.SneakyThrows;
 import mainPage.MainPage;
 import signUpPage.SignUpPage;
 import surveyPage.InterestSelectPanel;
 import utils.Font;
-
 import javax.swing.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.Enumeration;
-import java.util.Timer;
-
 
 public class MainFrame extends JFrame {
     static public LoginPage loginPage;

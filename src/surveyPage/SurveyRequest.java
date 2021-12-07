@@ -7,7 +7,6 @@ import main.MainFrame;
 import utils.Request;
 
 public class SurveyRequest {
-
     static public MemberInterest createSurveyResult(){
         int score = 0;
         String level = "beginner";
@@ -50,6 +49,5 @@ public class SurveyRequest {
         SurveyPanel.page = 1;
         InterestSelectPanel.surveyPanel = new SurveyPanel(MainFrame.interestSelectPanel);
         InterestSelectPanel.surveyPanel.addQuestions();
-
     }
 }

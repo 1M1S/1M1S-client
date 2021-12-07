@@ -1,45 +1,32 @@
 package SchedulePage;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import db.MemberSchedule;
 import main.MainFrame;
 import utils.Images;
-
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.LayoutManager;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.ImageObserver;
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 
+import static utils.Request.xAccessToken;
 
 public class SchdulePage extends JFrame {
     private mainSchedulePanel mainPanel = new mainSchedulePanel();
     private dailyPanel DayPanel = new dailyPanel();
     private writePanel Add_panel = new writePanel();
     private writePanel Modify_panel = new writePanel();
+    private final Font tinyFont = new Font("나눔고딕", Font.PLAIN, 13);
 
     //패널별로 요일 분류
     private static String choosePanelDate;
@@ -54,7 +41,8 @@ public class SchdulePage extends JFrame {
         setLayout(null);
         setResizable(true);
         setSize(1115, 824);
-        setLocationRelativeTo((Component)null);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         add(mainPanel);
         add(DayPanel);
         add(Add_panel);
@@ -71,11 +59,7 @@ public class SchdulePage extends JFrame {
         mainPanel.add(pageTitle);
 
         JButton mainPageRollBackBtn = new JButton(Images.ForumRollbackButton.getImageIcon());
-        mainPageRollBackBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
+        mainPageRollBackBtn.addActionListener(e -> dispose());
         mainPageRollBackBtn.setBounds(0, 0, 82, 82);
         mainPanel.add(mainPageRollBackBtn);
 
@@ -86,20 +70,22 @@ public class SchdulePage extends JFrame {
         title.setBounds(170, 35, 750, 70);
         DayPanel.add(title);
 
-
         JButton chooseDayPageRollBackBtn = new JButton(Images.ForumRollbackButton.getImageIcon());
-        chooseDayPageRollBackBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                DayPanel.setVisible(false);
-                mainPanel.setVisible(true);
-            }
+        chooseDayPageRollBackBtn.addActionListener(e -> {
+            DayPanel.setVisible(false);
+            mainPanel.setVisible(true);
         });
         chooseDayPageRollBackBtn.setBounds(0, 0, 82, 82);
         DayPanel.add(chooseDayPageRollBackBtn);
 
-
-        DefaultTableModel dtm = new DefaultTableModel(0, 0);
+        DefaultTableModel dtm = new DefaultTableModel(0, 0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         todoTable = new JTable(dtm);
+        todoTable.setFont(tinyFont);
         dtm.setColumnIdentifiers(header);
         todoTable.removeColumn(todoTable.getColumnModel().getColumn(0));
         todoTable.getColumn("Content").setWidth(400);
@@ -111,16 +97,16 @@ public class SchdulePage extends JFrame {
         todoTable.getColumn("EndTime").setWidth(130);
         todoTable.getColumn("EndTime").setMinWidth(130);
         todoTable.getColumn("EndTime").setMaxWidth(130);
-        todoTable.getColumn("Finish").setWidth(80);
-        todoTable.getColumn("Finish").setMinWidth(80);
-        todoTable.getColumn("Finish").setMaxWidth(80);
+        todoTable.getColumn("Finish").setWidth(130);
+        todoTable.getColumn("Finish").setMinWidth(130);
+        todoTable.getColumn("Finish").setMaxWidth(130);
 
         todoTable.getTableHeader().setReorderingAllowed(false);
 
         // table scroll 추가
         JScrollPane scroll = new JScrollPane(todoTable, 22, 31);
         scroll.setVisible(true);
-        scroll.setBounds(130, 125, 787, 617);
+        scroll.setBounds(130, 125, 790, 620);
         DayPanel.add(scroll);
 
         JButton addButton = new JButton("Add");
@@ -150,125 +136,112 @@ public class SchdulePage extends JFrame {
         delButton.setBounds(936, 252, 105, 35);
         DayPanel.add(delButton);
         //일정 삭제 기능
-        delButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int delRow = todoTable.getSelectedRow();
-                if (delRow >= 0) {
-                    Long delId = (Long)todoTable.getModel().getValueAt(delRow, 0);
+        delButton.addActionListener(e -> {
+            int delRow = todoTable.getSelectedRow();
+            if (delRow >= 0) {
+                Long delId = (Long)todoTable.getModel().getValueAt(delRow, 0);
 
-                    String uri = "http://localhost:8080";
-                    uri = uri + "/api/user/" + Long.toString(1L) + "/schedule/" + Long.toString(delId);
+                String uri = "http://3.135.231.171";
+                uri = uri + "/api/user/schedule/" + delId;
 
-                    try {
-                        HttpClient client = HttpClient.newHttpClient();
-                        HttpRequest request = HttpRequest.newBuilder()
-                                .uri(URI.create(uri))
-                                .DELETE()
-                                .build();
+                try {
+                    HttpClient client = HttpClient.newHttpClient();
+                    HttpResponse<String> response = client.send(HttpRequest.newBuilder()
+                                    .uri(URI.create(uri))
+                                    .header("x-access-token", xAccessToken)
 
-                        HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-                        System.out.println("delete response: "+(String)response.body());
+                                    .header("Content-Type", "application/json; charset=UTF-8")
+                                    .DELETE()
+                                    .build()
+                           , HttpResponse.BodyHandlers.ofString());
 
-                    } catch (Exception ex) {
-                        System.out.println("오류 발생");
-                        ex.printStackTrace();
-                    }
-                    //update
-                    getTodoList(dtm);
-                    JOptionPane.showMessageDialog((Component)null, "Row Deleted");
-                } else {JOptionPane.showMessageDialog((Component)null, "Unable To Delete");
+                    System.out.println("delete response: "+ response.body());
+
+                } catch (Exception ex) {
+                    System.out.println("오류 발생");
+                    ex.printStackTrace();
                 }
+                //update
+                getTodoList(dtm);
+                JOptionPane.showMessageDialog(null, "Row Deleted");
+            } else {JOptionPane.showMessageDialog(null, "Unable To Delete");
             }
         });
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         JButton btnMonday = new JButton("Monday");
-        btnMonday.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                choosePanelDate = "월";
-                mainPanel.setVisible(false);
-                DayPanel.setVisible(true);
-                getTodoList(dtm);
-            }
+        btnMonday.addActionListener(e -> {
+            choosePanelDate = "월";
+            mainPanel.setVisible(false);
+            DayPanel.setVisible(true);
+            getTodoList(dtm);
         });
         btnMonday.setFont(new Font("나눔고딕", 0, 15));
         btnMonday.setBounds(352, 344, 136, 37);
         mainPanel.add(btnMonday);
 
         JButton btnTuesday = new JButton("Tuesday");
-        btnTuesday.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                choosePanelDate = "화";
-                mainPanel.setVisible(false);
-                DayPanel.setVisible(true);
-                getTodoList(dtm);
-            }
+        btnTuesday.addActionListener(e -> {
+            choosePanelDate = "화";
+            mainPanel.setVisible(false);
+            DayPanel.setVisible(true);
+            getTodoList(dtm);
         });
         btnTuesday.setFont(new Font("나눔고딕", 0, 15));
         btnTuesday.setBounds(500, 344, 136, 37);
         mainPanel.add(btnTuesday);
 
         JButton btnWednesday = new JButton("Wednesday");
-        btnWednesday.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                choosePanelDate = "수";
-                mainPanel.setVisible(false);
-                DayPanel.setVisible(true);
-                getTodoList(dtm);
-            }
+        btnWednesday.addActionListener(e -> {
+            choosePanelDate = "수";
+            mainPanel.setVisible(false);
+            DayPanel.setVisible(true);
+            getTodoList(dtm);
         });
         btnWednesday.setFont(new Font("나눔고딕", 0, 15));
         btnWednesday.setBounds(648, 344, 136, 37);
         mainPanel.add(btnWednesday);
 
         JButton btnThursday = new JButton("Thursday");
-        btnThursday.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                choosePanelDate = "목";
-                mainPanel.setVisible(false);
-                DayPanel.setVisible(true);
-                getTodoList(dtm);
-            }
+        btnThursday.addActionListener(e -> {
+            choosePanelDate = "목";
+            mainPanel.setVisible(false);
+            DayPanel.setVisible(true);
+            getTodoList(dtm);
         });
         btnThursday.setFont(new Font("나눔고딕", 0, 15));
         btnThursday.setBounds(270, 408, 136, 37);
         mainPanel.add(btnThursday);
 
         JButton btnFriday = new JButton("Friday");
-        btnFriday.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                choosePanelDate = "금";
-                mainPanel.setVisible(false);
-                DayPanel.setVisible(true);
-                getTodoList(dtm);
-            }
+        btnFriday.addActionListener(e -> {
+            choosePanelDate = "금";
+            mainPanel.setVisible(false);
+            DayPanel.setVisible(true);
+            getTodoList(dtm);
         });
         btnFriday.setFont(new Font("나눔고딕", 0, 15));
         btnFriday.setBounds(418, 408, 136, 37);
         mainPanel.add(btnFriday);
 
         JButton btnSaturday = new JButton("Saturday");
-        btnSaturday.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                choosePanelDate = "토";
-                mainPanel.setVisible(false);
-                DayPanel.setVisible(true);
-                getTodoList(dtm);
-            }
+        btnSaturday.addActionListener(e -> {
+            choosePanelDate = "토";
+            mainPanel.setVisible(false);
+            DayPanel.setVisible(true);
+            getTodoList(dtm);
         });
         btnSaturday.setFont(new Font("나눔고딕", 0, 15));
         btnSaturday.setBounds(566, 408, 136, 37);
         mainPanel.add(btnSaturday);
 
         JButton btnSunday = new JButton("Sunday");
-        btnSunday.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                choosePanelDate = "일";
-                mainPanel.setVisible(false);
-                DayPanel.setVisible(true);
-                getTodoList(dtm);
-            }
+        btnSunday.addActionListener(e -> {
+            choosePanelDate = "일";
+            mainPanel.setVisible(false);
+            DayPanel.setVisible(true);
+            getTodoList(dtm);
         });
         btnSunday.setFont(new Font("나눔고딕", 0, 15));
         btnSunday.setBounds(717, 408, 136, 37);
@@ -280,18 +253,17 @@ public class SchdulePage extends JFrame {
         DayPanel.setBounds(0, 0, 1100, 824);
         DayPanel.setVisible(false);
 
-        Add_panel.setLayout((LayoutManager)null);
+        Add_panel.setLayout(null);
         Add_panel.setBounds(0, 0, 1100, 824);
         Add_panel.setVisible(false);
 
-        Modify_panel.setLayout((LayoutManager)null);
+        Modify_panel.setLayout(null);
         Modify_panel.setBounds(0, 0, 1100, 824);
         Modify_panel.setVisible(false);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //일정 추가 패널
-
         JLabel addPanelTitle = new JLabel("Plan");
         addPanelTitle.setFont(new Font("나눔고딕", 1, 40));
         addPanelTitle.setHorizontalAlignment(0);
@@ -300,7 +272,7 @@ public class SchdulePage extends JFrame {
 
         JPanel panel = new JPanel();
         panel.setBounds(330, 264, 452, 322);
-        Add_panel.add(panel);panel.setLayout((LayoutManager)null);
+        Add_panel.add(panel);panel.setLayout(null);
 
         JLabel lblPlan = new JLabel("Plan");
         lblPlan.setFont(new Font("나눔고딕", 0, 25));
@@ -438,7 +410,6 @@ public class SchdulePage extends JFrame {
  /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //일정 수정 패널
-
         JLabel modifyPanelTitle = new JLabel("Plan");
         modifyPanelTitle.setFont(new Font("나눔고딕", 1, 40));
         modifyPanelTitle.setHorizontalAlignment(0);
@@ -624,13 +595,11 @@ public class SchdulePage extends JFrame {
 
     //일정 추가 기능
     void addTable(DefaultTableModel dtm, String Content, LocalDateTime startTime, LocalDateTime endTime, Long interest_id) {
-
             //request body 생성
             MemberSchedule addpost = new MemberSchedule(Content, startTime, endTime, null , interest_id); ////새로 생성 DB Post 클래스
             ScheduleRequest.addMemberSchedule(addpost);
             //update
             getTodoList(dtm);
-
     }
 
     //일정 수정 기능

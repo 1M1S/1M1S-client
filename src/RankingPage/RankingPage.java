@@ -1,21 +1,14 @@
 package RankingPage;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import db.Ranking;
 import main.MainFrame;
 import utils.Images;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.ImageObserver;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 public class RankingPage extends JFrame {
     private rankingPanel mainRankPanel = new rankingPanel();
@@ -40,7 +33,7 @@ public class RankingPage extends JFrame {
         setResizable(true);
         setSize(1115, 824);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         add(mainRankPanel);
 
         mainRankPanel.setVisible(true);
@@ -168,7 +161,6 @@ public class RankingPage extends JFrame {
         getRanking(programDtm, 3L);
 
         mainRankPanel.add(rankingScroll4);
-
     }
 
 /******************************************************************************************************************/

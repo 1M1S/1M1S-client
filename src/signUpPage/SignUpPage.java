@@ -1,7 +1,6 @@
 package signUpPage;
 
 import javax.swing.*;
-
 import db.*;
 import main.MainFrame;
 import surveyPage.InterestSelectPanel;
@@ -22,8 +21,5 @@ public class SignUpPage extends JPanel {
         add(memberInformationPanel);
         setLayout(null);
         setSize(1100, 824);
-        //프레임 설정
-
     }
-
 }

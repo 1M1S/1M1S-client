@@ -2,7 +2,6 @@ package utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
 import javax.swing.*;
 
 @Getter
@@ -13,7 +12,7 @@ public enum Images {
     SurveyBackGround(new ImageIcon("Images\\SurveyBackGround2.png")),
     JoinFormBackGround(new ImageIcon("Images\\JoinFormBackGround.png")),
     BookMarkImage1(new ImageIcon("Images\\BookMarkImage1.png")),
-    BookMarkImage2(new ImageIcon("Images\\BookMarkImage1.png")),
+    BookMarkImage2(new ImageIcon("Images\\BookMarkImage2.png")),
     RollBackButton(new ImageIcon("Images\\RollBackButton.png")),
     CommentAddButton(new ImageIcon("Images\\commentAddButton.png")),
     EmployCategory(new ImageIcon("Images\\employ.png")),

@@ -2,17 +2,10 @@ package surveyPage;
 
 import db.Interest;
 import main.MainFrame;
-import signUpPage.JoinRequest;
-import signUpPage.SignUpPage;
 import utils.Font;
 import utils.Images;
-
 import javax.swing.*;
 import java.awt.*;
-
-
-
-
 
 public class InterestSelectPanel extends JPanel {
     static public MainFrame mainFrame;
@@ -25,11 +18,10 @@ public class InterestSelectPanel extends JPanel {
     public InterestSelectPanel(MainFrame mainFrame){
         InterestSelectPanel.mainFrame = mainFrame;
         surveyPanel= new SurveyPanel(this);
-        //패널2에서 관심분야 선택
+
         setSize(1100, 824);
         setLayout(null);
         setVisible(true);
-        //패널 2 - 관심분야 선택
         //안내 글
         JLabel text = new JLabel();
         text.setText("관심 분야를 선택해주세요!");
@@ -51,23 +43,23 @@ public class InterestSelectPanel extends JPanel {
         //프로그래밍 선택 버튼
         JButton programingButton = new JButton(Images.ProgrammingCategory.getImageIcon());
         programingButton.addActionListener(e -> submit(2L));
-        programingButton.setBounds(480, 310, 150, 150);
+        programingButton.setBounds(520, 310, 150, 150);
         programingButton.setContentAreaFilled(false);
         add(programingButton);
         JLabel programingLabel = new JLabel();
         programingLabel.setText("프로그래밍");
-        programingLabel.setBounds(505, 470, 150, 30);
+        programingLabel.setBounds(545, 470, 150, 30);
         add(programingLabel);
 
         //취업 선택 버튼
         JButton employButton = new JButton(Images.EmployCategory.getImageIcon());
         employButton.addActionListener(e -> submit(3L));
-        employButton.setBounds(660, 310, 150, 150);
+        employButton.setBounds(740, 310, 150, 150);
         employButton.setContentAreaFilled(false);
         add(employButton);
         JLabel employLabel = new JLabel();
         employLabel.setText("취업 준비");
-        employLabel.setBounds(695, 470, 120, 30);
+        employLabel.setBounds(775, 470, 120, 30);
         add(employLabel);
 
     }

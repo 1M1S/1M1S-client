@@ -3,10 +3,8 @@ package signUpPage;
 import loginPage.LoginPage;
 import main.MainFrame;
 import utils.Images;
-
 import javax.swing.*;
 import java.awt.*;
-
 
 public class MemberInformationPanel extends JPanel {
     static public SignUpPage signUpPage;
@@ -23,7 +21,6 @@ public class MemberInformationPanel extends JPanel {
         return passwdConfirmText.getText().equals(passwdText.getText());
     }
 
-
     public MemberInformationPanel(SignUpPage signUpPage){
         MemberInformationPanel.signUpPage = signUpPage;
         setSize(1100, 824);
@@ -33,7 +30,7 @@ public class MemberInformationPanel extends JPanel {
         //패널1 되돌아가기 버튼
         JButton rollBackButton = new JButton(Images.RollBackButton.getImageIcon());
         rollBackButton.addActionListener(e -> SignUpPage.mainFrame.change(MainFrame.loginPage, LoginPage.class));
-        rollBackButton.setBounds(155, 105, 80, 80);
+        rollBackButton.setBounds(175, 105, 80, 80);
         rollBackButton.setContentAreaFilled(false);
         add(rollBackButton);
 
@@ -58,7 +55,6 @@ public class MemberInformationPanel extends JPanel {
         womanBox.setBounds(660, 200, 97, 30);
         add(womanBox);
         group.add(womanBox);
-
 
         //닉네임 입력받기
         Label nicknameLabel = new Label("Nickname : ");
@@ -114,6 +110,7 @@ public class MemberInformationPanel extends JPanel {
         nextButton.setBounds(550, 600, 120, 50);
         add(nextButton);
     }
+
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);

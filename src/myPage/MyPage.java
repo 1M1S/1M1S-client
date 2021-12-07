@@ -1,13 +1,11 @@
 package myPage;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import db.*;
+import db.Comment;
+import db.MemberInformation;
+import db.Post;
 import loginPage.LoginPage;
 import main.MainFrame;
-import mainPage.MainPage;
 import utils.Images;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -20,7 +18,7 @@ public class MyPage extends JFrame {
     private final myPanel panel = new myPanel();
     public static MemberInformation me = null;
     public static MainFrame mainFrame;
-    //user_id 받아서 사용
+
     public MyPage(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         me = MyPageRequest.getMe();
@@ -28,6 +26,7 @@ public class MyPage extends JFrame {
             mainFrame.change(mainFrame.loginPage, LoginPage.class);
             this.dispose();
         }
+
         //프레임 설정
         setTitle("1M1S-myPage");
         setVisible(true);
@@ -37,6 +36,7 @@ public class MyPage extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         add(panel);
+
         //***********************************************************************************************************************************************************************
         //***********************************************************************************************************************************************************************
         //***********************************************************************************************************************************************************************
@@ -114,10 +114,8 @@ public class MyPage extends JFrame {
         passwordButton.setBounds(60, 450, 240, 40);
         panel.add(passwordButton);
 
-
         //table header
         String[] header = {"id", "interest", "title", "content"};
-
         //내가 쓴 글
         //라벨
         JLabel writeLabel = new JLabel();
@@ -237,9 +235,6 @@ public class MyPage extends JFrame {
     private class MyMouseListener extends MouseAdapter {
         @Override
         public void mouseClicked(MouseEvent e){
-            if(e.getClickCount() == 2 ){
-
-            }
         }
     }
 

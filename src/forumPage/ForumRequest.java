@@ -1,18 +1,11 @@
 package forumPage;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import db.Comment;
 import db.Interest;
-import db.MemberInformation;
 import db.Post;
 import main.MainFrame;
 import utils.Request;
 
-import javax.swing.table.DefaultTableModel;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 public class ForumRequest {
     public static MainFrame mainFrame;
@@ -21,12 +14,10 @@ public class ForumRequest {
         mainFrame = ForumPage.mainFrame;
         var request = new Request<Void, Post[]>("/api/post?interest_id=" + ForumPage.interest.getId());
         Post[] res = request.GET(Post[].class);
-
         return res;
     }
 
     public static Post addPost(Post newPost){
-
         var request = new Request<Post, Post>("/api/user/post", newPost);
         return request.POST(Post.class);
     }
@@ -40,19 +31,16 @@ public class ForumRequest {
         System.out.println(newPost.getId());
         var request = new Request<Post, Post>("/api/user/post/" + newPost.getId(), newPost);
         return request.PUT(Post.class);
-
     }
 
     public static Post deletePost(Post newPost){
         var request = new Request<Post, Post>("/api/user/post/" + newPost.getId());
         return request.DELETE(Post.class);
-
     }
 
     public static Comment deleteComment(Long comment_id){
         var request = new Request<Void, Comment>("/api/user/comment/" + comment_id);
         return request.DELETE(Comment.class);
-
     }
     public static boolean checkOwner(String post_id){
         var request = new Request<Void, Post>("/api/post/"+post_id);

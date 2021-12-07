@@ -1,14 +1,11 @@
 package CurriculumPage;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import db.Curriculum;
 import db.CurriculumSchedule;
 import db.MemberCurriculum;
 import utils.Images;
-
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -20,9 +17,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 
 public class CurriculumPage extends JFrame {
     private mainCurriculumPanel mainPanel = new mainCurriculumPanel();
@@ -60,12 +54,7 @@ public class CurriculumPage extends JFrame {
         mainPanel.setLayout(null);
 
         JButton mainPageRollBackBtn = new JButton(Images.ForumRollbackButton.getImageIcon());
-        mainPageRollBackBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                //mainPanel.setVisible(true);           //준화꺼랑 합친 후, main페이지 보여주기
-            }
-        });
+        mainPageRollBackBtn.addActionListener(e -> dispose());
         mainPageRollBackBtn.setBounds(0, 0, 82, 82);
         mainPanel.add(mainPageRollBackBtn);
 
@@ -138,23 +127,14 @@ public class CurriculumPage extends JFrame {
         getMainCurri(curriMainDtm);
 
         JButton addCurriBtn = new JButton("Add");
-        addCurriBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addUserCurri(curriMainDtm);
-            }
-        });
+        addCurriBtn.addActionListener(e -> addUserCurri(curriMainDtm));
         addCurriBtn.setFont(new Font("나눔고딕", Font.BOLD, 15));
         addCurriBtn.setBounds(762, 128, 125, 35);
         mainPanel.add(addCurriBtn);
 
         JButton delCurriBtn = new JButton("Delete");
         //일정 삭제 기능
-        delCurriBtn.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                delUserCurri(curriMainDtm);
-            }
-        });
+        delCurriBtn.addActionListener(e -> delUserCurri(curriMainDtm));
         delCurriBtn.setFont(new Font("나눔고딕", Font.BOLD, 15));
         delCurriBtn.setBounds(899, 128, 125, 35);
         mainPanel.add(delCurriBtn);
@@ -272,7 +252,7 @@ public class CurriculumPage extends JFrame {
                 // 선택한 커리큘럼의 check여부 true로 변경.
                 curriMainTable.getModel().setValueAt(true, addRow,3);
                 dtm.fireTableDataChanged();
-                JOptionPane.showMessageDialog((Component)null, "User-Curriculum added");
+                JOptionPane.showMessageDialog(null, "User-Curriculum added");
         }
     }
 
@@ -284,7 +264,7 @@ public class CurriculumPage extends JFrame {
             CurriculumRequest.deleteMemberCurriculum(delCurriId);
                 curriMainTable.getModel().setValueAt("     "+false, delRow,3);
             dtm.fireTableDataChanged();
-            JOptionPane.showMessageDialog((Component)null, "User-Curriculum Deleted");
+            JOptionPane.showMessageDialog(null, "User-Curriculum Deleted");
     }
 
 
@@ -295,7 +275,7 @@ public class CurriculumPage extends JFrame {
         public void paintComponent(Graphics g) {
             Dimension d = this.getSize();
             ImageIcon image = Images.CurriculumBackground.getImageIcon();
-            g.drawImage(image.getImage(), 0, 0, d.width, d.height, (ImageObserver)null);
+            g.drawImage(image.getImage(), 0, 0, d.width, d.height, null);
         }
     }
 }

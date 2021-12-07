@@ -4,10 +4,8 @@ import db.Member;
 import main.MainFrame;
 import signUpPage.SignUpPage;
 import utils.Images;
-
 import javax.swing.*;
 import java.awt.*;
-
 
 public class LoginPanel extends JPanel {
     private LoginPage loginPage;

@@ -4,7 +4,6 @@ import db.MemberSchedule;
 import utils.Request;
 
 public class ScheduleRequest {
-
     public static MemberSchedule addMemberSchedule(MemberSchedule memberSchedule){
         var request = new Request<MemberSchedule,MemberSchedule>("/api/user/schedule",memberSchedule);
         return request.POST(MemberSchedule.class);

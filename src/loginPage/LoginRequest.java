@@ -10,11 +10,7 @@ import myPage.MyPageRequest;
 import surveyPage.InterestSelectPanel;
 import utils.Request;
 
-
-
 public class LoginRequest {
-    static public ObjectMapper objectMapper = new ObjectMapper();
-
     public static void Login(MainFrame mainFrame, Member loginInformation){
         var request = new Request<Member, Token>("/auth/login", loginInformation);
         try {
@@ -29,7 +25,5 @@ public class LoginRequest {
         }catch (Exception e){
             Request.xAccessToken = "";
         }
-
     }
-
 }

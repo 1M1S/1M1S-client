@@ -6,7 +6,6 @@ import db.MemberInformation;
 import db.Post;
 import utils.Request;
 
-
 public class MyPageRequest {
     public static MemberInformation getMe(){
         var request = new Request<Void, MemberInformation>("/auth/me");

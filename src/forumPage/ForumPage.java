@@ -1,23 +1,15 @@
 package forumPage;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.tools.javac.Main;
-import db.*;
+import db.Comment;
+import db.Interest;
+import db.Post;
 import main.MainFrame;
 import utils.Images;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.Objects;
-
-import static forumPage.ForumRequest.modifyPost;
 
 public class ForumPage extends JFrame {
     private final Font mainFont = new Font("나눔고딕", Font.PLAIN, 20);
@@ -32,7 +24,6 @@ public class ForumPage extends JFrame {
     private final myPanel2 panelAddPost = new myPanel2();
     private final myPanel panelClickPost = new myPanel();
     private final myPanel2 panelModifyPost = new myPanel2();
-    //user_id DB에서 받아오기.
     static public Interest interest = null; //관심분야, 1, 2, 3 순서대로 운동, 프로그래밍, 취업 0인 경우 자유 게시판 글
     public static String post_id;
     public static Post post;
@@ -89,6 +80,7 @@ public class ForumPage extends JFrame {
         setLayout(null);
         setResizable(false);
         setSize(1115, 824);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         add(panelForumGeneral);
         add(panelForumExercise);
@@ -155,9 +147,9 @@ public class ForumPage extends JFrame {
         generalTable.getColumn("title").setMaxWidth(250);
         //컬럼 크기, 위치 조절 불가
         generalTable.getTableHeader().setReorderingAllowed(false);
-        generalTable.getTableHeader().setReorderingAllowed(false);
         //마우스 이벤트 추가
         generalTable.addMouseListener(new MyMouseListener());
+        generalTable.setFont(tinyFont);
         //스크롤팬 설정
         JScrollPane generalForumScrollPane = new JScrollPane(generalTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         generalForumScrollPane.setVisible(true);
@@ -179,9 +171,9 @@ public class ForumPage extends JFrame {
         exerciseTable.getColumn("title").setMaxWidth(250);
         //컬럼 크기, 위치 조절 불가
         exerciseTable.getTableHeader().setReorderingAllowed(false);
-        exerciseTable.getTableHeader().setReorderingAllowed(false);
         //마우스 이벤트 추가
         exerciseTable.addMouseListener(new MyMouseListener());
+        exerciseTable.setFont(tinyFont);
         //스크롤팬 설정
         JScrollPane exerciseForumScrollPane = new JScrollPane(exerciseTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         exerciseForumScrollPane.setVisible(true);
@@ -203,9 +195,9 @@ public class ForumPage extends JFrame {
         programingTable.getColumn("title").setMaxWidth(250);
         //컬럼 크기, 위치 조절 불가
         programingTable.getTableHeader().setReorderingAllowed(false);
-        programingTable.getTableHeader().setReorderingAllowed(false);
         //마우스 이벤트 추가
         programingTable.addMouseListener(new MyMouseListener());
+        programingTable.setFont(tinyFont);
         //스크롤팬 설정
         JScrollPane programingForumScrollPane = new JScrollPane(programingTable, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         programingForumScrollPane.setVisible(true);
@@ -227,7 +219,7 @@ public class ForumPage extends JFrame {
         employTable.getColumn("title").setMaxWidth(250);
         //컬럼 크기, 위치 조절 불가
         employTable.getTableHeader().setReorderingAllowed(false);
-        employTable.getTableHeader().setReorderingAllowed(false);
+        employTable.setFont(tinyFont);
         //마우스 이벤트 추가
         employTable.addMouseListener(new MyMouseListener());
         //스크롤팬 설정
@@ -247,8 +239,8 @@ public class ForumPage extends JFrame {
         commentTable.getColumn("user_id").setWidth(100);
         commentTable.getColumn("user_id").setMinWidth(100);
         commentTable.getColumn("user_id").setMaxWidth(100);
+        commentTable.setFont(tinyFont);
         //컬럼 크기, 위치 조절 불가
-        commentTable.getTableHeader().setReorderingAllowed(false);
         commentTable.getTableHeader().setReorderingAllowed(false);
         //마우스 이벤트 추가
         commentTable.addMouseListener(new MyMouseListener2());
@@ -332,7 +324,6 @@ public class ForumPage extends JFrame {
         addPostButton_generalPage.setBounds(964, 100, 120, 80);
         addPostButton_generalPage.setContentAreaFilled(true);
         panelForumGeneral.add(addPostButton_generalPage);
-
 
         //***********************************************************************************************************************************************************************
         //***********************************************************************************************************************************************************************
@@ -1000,7 +991,6 @@ public class ForumPage extends JFrame {
         comment_dtm.setRowCount(0); //테이블 초기화
         Comment[] comments = ForumRequest.getComments(post.getId().toString());
         for(Comment c : comments) {
-
             comment_dtm.addRow(new Object[] {c.getId(), c.getMember().getId(), c.getContent()});
         }
     }

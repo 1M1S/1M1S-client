@@ -1,14 +1,12 @@
 package consultingPage;
 
 import utils.Images;
-
 import javax.swing.*;
 import java.awt.*;
 
 public class ConsultingPage extends JFrame {
     private final Font mainFont = new Font("나눔고딕", Font.PLAIN, 20);
     private final Font smallFont = new Font("나눔고딕", Font.PLAIN, 17);
-    private final Font tinyFont = new Font("나눔고딕", Font.PLAIN, 13);
     private final Font bigFont = new Font("나눔고딕", Font.PLAIN, 25);
     private final Font giantFont = new Font("나눔고딕", Font.BOLD, 35);
     private final myPanel panel1 = new myPanel();
