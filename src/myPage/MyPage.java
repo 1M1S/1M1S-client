@@ -100,19 +100,6 @@ public class MyPage extends JFrame {
         userIdLabel.setFont(mainFont);
         userIdLabel.setBounds(20, 360, 800, 60);
         panel.add(userIdLabel);
-        //아이디 변경버튼
-        JButton userIdButton = new JButton();
-        userIdButton.addActionListener(e -> {
-            String temp = JOptionPane.showInputDialog("변경할 아이디를 입력하세요.");
-            if(temp != null) {
-               me.getMember().setUsername(temp);
-               me = MyPageRequest.modifyMe();
-            }
-        });
-        userIdButton.setText("변경하기");
-        userIdButton.setFont(mainFont);
-        userIdButton.setBounds(285, 365, 120, 40);
-        panel.add(userIdButton);
 
         //비밀번호 변경버튼
         JButton passwordButton = new JButton();

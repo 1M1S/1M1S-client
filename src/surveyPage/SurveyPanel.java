@@ -24,6 +24,30 @@ public class SurveyPanel extends JPanel {
     public void addQuestions(){
         //설문조사의 질문과 선택지는 서버에서 api로 string을 받아서 사용한다.
         //설문조사 생성
+        removeAll();
+        JButton RollBackButton = new JButton(Images.RollBackButton.getImageIcon());
+        RollBackButton.addActionListener(e -> SignUpPage.mainFrame.change(MainFrame.loginPage, LoginPage.class));
+        RollBackButton.setBounds(155, 105, 80, 80);
+        RollBackButton.setContentAreaFilled(false);
+        add(RollBackButton);
+        //다음 버튼
+        JButton NextButton = new JButton("Next");
+        NextButton.addActionListener(e -> nextPage());
+        NextButton.setBounds(700, 600, 80, 50);
+        add(NextButton);
+
+        JButton Index1Button = new JButton(Images.BookMarkImage1.getImageIcon());
+        Index1Button.addActionListener(e -> {if(page == 2)prevPage();});
+        Index1Button.setBounds(170, 185, 70, 50);
+        Index1Button.setContentAreaFilled(false);
+        add(Index1Button);
+
+        //다음 페이지 index 버튼
+        JButton Index2Button = new JButton(Images.BookMarkImage2.getImageIcon());
+        Index2Button.addActionListener(e -> {if(page == 1)nextPage();});
+        Index2Button.setBounds(170, 235, 70, 50);
+        Index2Button.setContentAreaFilled(false);
+        add(Index2Button);
         for(int i = (SurveyPanel.page-1)*3; i < SurveyPanel.page*3; i++){
             String[] answers = surveys[i].getChoices().split("\\|");
             JLabel question = new JLabel();
@@ -103,29 +127,7 @@ public class SurveyPanel extends JPanel {
         //서버에 유저 정보를 넘겨주고 다시 user_id만 받아서 사용
 
         //관심분야 선택 전으로 돌아가기
-        JButton RollBackButton = new JButton(Images.RollBackButton.getImageIcon());
-        RollBackButton.addActionListener(e -> SignUpPage.mainFrame.change(MainFrame.loginPage, LoginPage.class));
-        RollBackButton.setBounds(155, 105, 80, 80);
-        RollBackButton.setContentAreaFilled(false);
-        add(RollBackButton);
-        //다음 버튼
-        JButton NextButton = new JButton("Next");
-        NextButton.addActionListener(e -> nextPage());
-        NextButton.setBounds(700, 600, 80, 50);
-        add(NextButton);
 
-        JButton Index1Button = new JButton(Images.BookMarkImage1.getImageIcon());
-        Index1Button.addActionListener(e -> {if(page == 2)prevPage();});
-        Index1Button.setBounds(170, 185, 70, 50);
-        Index1Button.setContentAreaFilled(false);
-        add(Index1Button);
-
-        //다음 페이지 index 버튼
-        JButton Index2Button = new JButton(Images.BookMarkImage2.getImageIcon());
-        Index2Button.addActionListener(e -> {if(page == 1)nextPage();});
-        Index2Button.setBounds(170, 235, 70, 50);
-        Index2Button.setContentAreaFilled(false);
-        add(Index2Button);
     }
     @Override
     public void paintComponent(Graphics g){
